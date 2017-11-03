@@ -25,6 +25,11 @@ public class BeerDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //si tengo los detalles de una cerveza abiertos y giro la pantalla, vuelvo a la
+        //actividad principal
+        if (getResources().getConfiguration().orientation != 1) {
+            finish();
+        }
         setContentView(R.layout.activity_beer_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
