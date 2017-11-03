@@ -169,4 +169,20 @@ public class BeerModel {
                     + "\t url de foro: " + beer.getPhotoURL());
         }
     }
+
+    public static List<Beer> getBeers (){
+        return beers;
+    }
+
+    public static int findByName(String name) {
+        for (int i = 0; i < beers.size(); i++) {
+            //System.out.println("nombre_stock: " + beers.get(i).getName() + " nombre parametro: " + name);
+            //System.out.println("igual?? " + (beers.get(i).getName().equals(name)));
+            if (beers.get(i).getName().equals(name)) {
+                return i;
+            }
+
+        }
+        return (-1);
+    }
 }

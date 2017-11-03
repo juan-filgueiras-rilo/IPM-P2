@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Beers</string>
+    <string name="title_beer_detail">Beer Detail</string>
     <string name="api_call">API Call</string>
     <string name="click_on_the_button">Click on the button</string>
     <string name="no_connection_available">No network connection available.</string>
@@ -9,4 +10,18 @@
     <string name="data_retrieved">Data retrieved using the Google Sheets API and the account %s:</string>
     <string name="error_header">The following error occurred: %s</string>
     <string name="request_cancelled">Request cancelled.</string>
+    <string name="beer_name">Name</string>
+    <string name="beer_date">Date</string>
+    <string name="beer_made_in">Made in</string>
+    <string name="beer_type">Type</string>
+    <string name="beer_comment">Comment</string>
+    <string name="beer_more_info">More info</string>
+    <string name="beer_photo_url">Photo URL</string>
+    <string name="beer_photo">Photo</string>
+    <string name="no_date_available">Date field is empty</string>
+    <string name="no_made_in_available">Made in field is empty</string>
+    <string name="no_type_available">Type field is empty</string>
+    <string name="no_comment_available">Comment field is empty</string>
+    <string name="no_more_info_available">More info field is empty</string>
+    <string name="no_photo_available">Photo field is empty</string>
 </resources>
