@@ -100,6 +100,9 @@ public class BeerDetailFragment extends Fragment {
             ((TextView) rootView.findViewById(R.id.content_photo_url)).setText(photoURL);
             ImageView imageview = (ImageView) rootView.findViewById(R.id.beer_photo_viewer);
             ImageLoader imageLoader = ImageLoader.getInstance();
+            //si el imageloader ya está iniciado, no hacemos nada
+            if (!imageLoader.isInited())
+                imageLoader.init(ImageLoaderConfiguration.createDefault(getContext()));
             imageLoader.displayImage(beer.getPhotoURL(), imageview);
         }
 
