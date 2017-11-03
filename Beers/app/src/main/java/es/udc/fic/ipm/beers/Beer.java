@@ -6,6 +6,8 @@ package es.udc.fic.ipm.beers;
 
 public class Beer {
 
+    //guardamos el numero de fila para despues editar su comentario
+    private int rowNum;
     private String name;
     //tiene que ser string pq Estrella Galicia pone muchas veces
     private String date;
@@ -15,8 +17,10 @@ public class Beer {
     private String moreInfo;
     private String photoURL;
 
-    public Beer(String name, String date, String madeIn, String type,
+
+    public Beer(int rowNum, String name, String date, String madeIn, String type,
                 String comment, String moreInfo, String photoURL) {
+        this.rowNum = rowNum;
         this.name = name;
         this.date = date;
         this.madeIn = madeIn;
@@ -24,6 +28,10 @@ public class Beer {
         this.comment = comment;
         this.moreInfo = moreInfo;
         this.photoURL = photoURL;
+    }
+
+    public void setRowNum(int rowNum) {
+        this.rowNum = rowNum;
     }
 
     public void setName(String name) {
@@ -52,6 +60,10 @@ public class Beer {
 
     public void setPhotoURL (String photoURL) {
         this.photoURL = photoURL;
+    }
+
+    public int getRowNum() {
+        return this.rowNum;
     }
 
     public String getName() {

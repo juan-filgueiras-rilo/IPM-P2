@@ -35,7 +35,8 @@ public class BeerModel {
         List<Beer> tempbeers = new ArrayList<>();
         if (values != null) {
             results.add("Nombre, Fecha, Origen, Clase, Comentarios, Más info");
-
+            //empiezo a contar en la 2, ya que la 1 son los headers
+            int rowNum = 2;
             for (List row : values) {
                 //cada fila tiene un numero de columnas igual a las columnas que tengan texto,
                 //por ejemplo, la fila de budweiser tendra una sola columna!
@@ -150,9 +151,10 @@ public class BeerModel {
                         break;
                 }
                 //creamos la cerveza y la metemos en la lista de cervezas
-                Beer beer = new Beer(name, date, madeIn, type,
+                Beer beer = new Beer(rowNum, name, date, madeIn, type,
                         comment, moreInfo, photoURL);
                 tempbeers.add(beer);
+                rowNum++;
             }
         }
         //printList(tempbeers);
@@ -163,9 +165,13 @@ public class BeerModel {
     //just for debug
     private static void printList(List<Beer> birras) {
         for (Beer beer : birras) {
-            System.out.println("nombre: " + beer.getName() + "\t fecha: " + beer.getDate()
-                    + "\t origen: " + beer.getMadeIn() + "\t clase: " + beer.getType()
-                    + "\t comentarios: " + beer.getComment() + "\t mas info: " + beer.getMoreInfo()
+            System.out.println("rowNum: " + beer.getRowNum()
+                    + "\t nombre: " + beer.getName()
+                    + "\t fecha: " + beer.getDate()
+                    + "\t origen: " + beer.getMadeIn()
+                    + "\t clase: " + beer.getType()
+                    + "\t comentarios: " + beer.getComment()
+                    + "\t mas info: " + beer.getMoreInfo()
                     + "\t url de foro: " + beer.getPhotoURL());
         }
     }
