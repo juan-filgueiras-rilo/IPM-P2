@@ -48,6 +48,7 @@ public class BeerModel {
                 switch (tam) {
                     case 1: {
                         results.add((String)row.get(0));
+                        
                         //si la celda no está vacía, actualizo el campo
                         if (!TextUtils.isEmpty((String)row.get(0)))
                             name = (String)row.get(0);
