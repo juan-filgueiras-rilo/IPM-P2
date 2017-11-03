@@ -98,6 +98,9 @@ public class BeerDetailFragment extends Fragment {
             ((TextView) rootView.findViewById(R.id.content_comment)).setText(comment);
             ((TextView) rootView.findViewById(R.id.content_more_info)).setText(moreInfo);
             ((TextView) rootView.findViewById(R.id.content_photo_url)).setText(photoURL);
+            ImageView imageview = (ImageView) rootView.findViewById(R.id.beer_photo_viewer);
+            ImageLoader imageLoader = ImageLoader.getInstance();
+            imageLoader.displayImage(beer.getPhotoURL(), imageview);
         }
 
         return rootView;

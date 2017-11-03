@@ -107,6 +107,11 @@
             android:textStyle="bold"
             android:text="@string/beer_photo"
             android:layout_below="@id/content_photo_url" />
+        <ImageView
+            android:id="@+id/beer_photo_viewer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/title_photo_viewer"/>
 
     </RelativeLayout>
 
