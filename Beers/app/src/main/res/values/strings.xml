@@ -7,7 +7,7 @@
     <string name="needs_get_accounts_permission">This app needs to access your Google account (via Contacts).</string>
     <string name="needs_google_play_services">This app requires Google Play Services. Please install Google Play Services on your device and relaunch this app.</string>
     <string name="no_api_results">No results returned.</string>
-    <string name="data_retrieved">Data retrieved using the Google Sheets API and the account %s:</string>
+    <string name="data_retrieved">Data retrieved using the Google Sheets API and the account %s</string>
     <string name="error_header">The following error occurred: %s</string>
     <string name="request_cancelled">Request cancelled.</string>
     <string name="beer_name">Name</string>

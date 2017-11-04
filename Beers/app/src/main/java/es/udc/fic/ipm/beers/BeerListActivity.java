@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -55,8 +56,10 @@ public class BeerListActivity extends AppCompatActivity
 
 
     private TextView mOutputText;
+    ProgressBar mProgress;
     private View recyclerView;
     private List<Beer> beers;
+    FloatingActionButton fab;
 
     static final int REQUEST_ACCOUNT_PICKER = 1000;
     static final int REQUEST_AUTHORIZATION = 1001;
@@ -81,6 +84,7 @@ public class BeerListActivity extends AppCompatActivity
         beers = new ArrayList<>();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_beer_list);
+        mProgress = (ProgressBar) findViewById(R.id.progress_bar);
         //mOutputText = (TextView) findViewById(R.id.output_text);
         recyclerView = findViewById(R.id.beer_list);
 
@@ -91,12 +95,12 @@ public class BeerListActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();*/
                 getResultsFromApi();
 
                 //setupRecyclerView((RecyclerView) recyclerView);
@@ -146,6 +150,9 @@ public class BeerListActivity extends AppCompatActivity
         } else if (! isDeviceOnline()) {
             //mOutputText.setText("No network connection available.");
             //mOutputText.setText(getString(R.string.no_connection_available));
+            Snackbar.make(findViewById(android.R.id.content), getString(R.string.no_connection_available), Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+
             return;
         } else {
             new MakeRequestTask(mCredential).execute();
@@ -208,6 +215,8 @@ public class BeerListActivity extends AppCompatActivity
             case REQUEST_GOOGLE_PLAY_SERVICES:
                 if (resultCode != RESULT_OK) {
                     //mOutputText.setText(getText(R.string.needs_google_play_services));
+                    Snackbar.make(findViewById(android.R.id.content), getText(R.string.needs_google_play_services), Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
                 } else {
                     getResultsFromApi();
                 }
@@ -373,20 +382,31 @@ public class BeerListActivity extends AppCompatActivity
         @Override
         protected void onPreExecute() {
             //mOutputText.setText("");
-            //mProgress.setVisibility(View.VISIBLE);
-            //mProgress.animate();
+            mProgress.setVisibility(View.VISIBLE);
+            mProgress.animate();
+            fab.setVisibility(View.INVISIBLE);
+
         }
 
         @Override
         protected void onPostExecute(List<Beer> output) {
-            /*mProgress.setVisibility(View.INVISIBLE);*/
+            mProgress.setVisibility(View.INVISIBLE);
+            if (output == null || output.size() == 0) {
+                Snackbar.make(findViewById(android.R.id.content), getString(R.string.no_api_results), Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            } else {
+                Snackbar.make(findViewById(android.R.id.content), getString(R.string.data_retrieved, mCredential.getSelectedAccountName()),
+                        Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            }
             setBeers(output);
+            fab.setVisibility(View.VISIBLE);
             setupRecyclerView((RecyclerView) recyclerView);
         }
 
         @Override
         protected void onCancelled() {
-            //mProgress.setVisibility(View.INVISIBLE);
+            mProgress.setVisibility(View.INVISIBLE);
+            fab.setVisibility(View.VISIBLE);
             if (mLastError != null) {
                 if (mLastError instanceof GooglePlayServicesAvailabilityIOException) {
                     showGooglePlayServicesAvailabilityErrorDialog(
@@ -397,10 +417,12 @@ public class BeerListActivity extends AppCompatActivity
                             ((UserRecoverableAuthIOException) mLastError).getIntent(),
                             BeerListActivity.REQUEST_AUTHORIZATION);
                 } else {
-                    //mOutputText.setText(getString(R.string.error_header, mLastError.getMessage()));
+                    Snackbar.make(findViewById(android.R.id.content), mLastError.getMessage(), Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
                 }
             } else {
-                //mOutputText.setText(R.string.request_cancelled);
+                Snackbar.make(findViewById(android.R.id.content), R.string.request_cancelled, Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
             }
         }
     }
