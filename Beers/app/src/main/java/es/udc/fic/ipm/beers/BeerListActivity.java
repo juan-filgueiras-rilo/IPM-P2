@@ -70,7 +70,8 @@ public class BeerListActivity extends AppCompatActivity
 
 
     private static final String PREF_ACCOUNT_NAME = "accountName";
-    private static final String[] SCOPES = { SheetsScopes.SPREADSHEETS_READONLY };
+    //private static final String[] SCOPES = {SheetsScopes.SPREADSHEETS_READONLY};
+    private static final String[] SCOPES = {SheetsScopes.SPREADSHEETS};
 
 
     /**
@@ -102,7 +103,7 @@ public class BeerListActivity extends AppCompatActivity
                 /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();*/
                 getResultsFromApi();
-
+                //makePutOnApi();
                 //setupRecyclerView((RecyclerView) recyclerView);
             }
         });
@@ -129,12 +130,10 @@ public class BeerListActivity extends AppCompatActivity
     }
 
 
-
-
-
     public void setBeers(List<Beer> birras) {
         this.beers = birras;
     }
+
     /**
      * Attempt to call the API, after verifying that all the preconditions are
      * satisfied. The preconditions are: Google Play Services installed, an
@@ -147,7 +146,7 @@ public class BeerListActivity extends AppCompatActivity
             acquireGooglePlayServices();
         } else if (mCredential.getSelectedAccountName() == null) {
             chooseAccount();
-        } else if (! isDeviceOnline()) {
+        } else if (!isDeviceOnline()) {
             //mOutputText.setText("No network connection available.");
             //mOutputText.setText(getString(R.string.no_connection_available));
             Snackbar.make(findViewById(android.R.id.content), getString(R.string.no_connection_available), Snackbar.LENGTH_LONG)
@@ -155,10 +154,13 @@ public class BeerListActivity extends AppCompatActivity
 
             return;
         } else {
-            new MakeRequestTask(mCredential).execute();
+            new MakeGetRequest(mCredential).execute();
 
         }
     }
+
+
+
 
     /**
      * Attempts to set the account used with the API credentials. If an account
@@ -201,17 +203,18 @@ public class BeerListActivity extends AppCompatActivity
      * Called when an activity launched here (specifically, AccountPicker
      * and authorization) exits, giving you the requestCode you started it with,
      * the resultCode it returned, and any additional data from it.
+     *
      * @param requestCode code indicating which activity result is incoming.
-     * @param resultCode code indicating the result of the incoming
-     *     activity result.
-     * @param data Intent (containing result data) returned by incoming
-     *     activity result.
+     * @param resultCode  code indicating the result of the incoming
+     *                    activity result.
+     * @param data        Intent (containing result data) returned by incoming
+     *                    activity result.
      */
     @Override
     protected void onActivityResult(
             int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch(requestCode) {
+        switch (requestCode) {
             case REQUEST_GOOGLE_PLAY_SERVICES:
                 if (resultCode != RESULT_OK) {
                     //mOutputText.setText(getText(R.string.needs_google_play_services));
@@ -247,11 +250,12 @@ public class BeerListActivity extends AppCompatActivity
 
     /**
      * Respond to requests for permissions at runtime for API 23 and above.
-     * @param requestCode The request code passed in
-     *     requestPermissions(android.app.Activity, String, int, String[])
-     * @param permissions The requested permissions. Never null.
+     *
+     * @param requestCode  The request code passed in
+     *                     requestPermissions(android.app.Activity, String, int, String[])
+     * @param permissions  The requested permissions. Never null.
      * @param grantResults The grant results for the corresponding permissions
-     *     which is either PERMISSION_GRANTED or PERMISSION_DENIED. Never null.
+     *                     which is either PERMISSION_GRANTED or PERMISSION_DENIED. Never null.
      */
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -265,9 +269,10 @@ public class BeerListActivity extends AppCompatActivity
     /**
      * Callback for when a permission is granted using the EasyPermissions
      * library.
+     *
      * @param requestCode The request code associated with the requested
-     *         permission
-     * @param list The requested permission list. Never null.
+     *                    permission
+     * @param list        The requested permission list. Never null.
      */
     @Override
     public void onPermissionsGranted(int requestCode, List<String> list) {
@@ -277,9 +282,10 @@ public class BeerListActivity extends AppCompatActivity
     /**
      * Callback for when a permission is denied using the EasyPermissions
      * library.
+     *
      * @param requestCode The request code associated with the requested
-     *         permission
-     * @param list The requested permission list. Never null.
+     *                    permission
+     * @param list        The requested permission list. Never null.
      */
     @Override
     public void onPermissionsDenied(int requestCode, List<String> list) {
@@ -288,6 +294,7 @@ public class BeerListActivity extends AppCompatActivity
 
     /**
      * Checks whether the device currently has a network connection.
+     *
      * @return true if the device has a network connection, false otherwise.
      */
     private boolean isDeviceOnline() {
@@ -299,8 +306,9 @@ public class BeerListActivity extends AppCompatActivity
 
     /**
      * Check that Google Play services APK is installed and up to date.
+     *
      * @return true if Google Play Services is available and up to
-     *     date on this device; false otherwise.
+     * date on this device; false otherwise.
      */
     private boolean isGooglePlayServicesAvailable() {
         GoogleApiAvailability apiAvailability =
@@ -327,8 +335,9 @@ public class BeerListActivity extends AppCompatActivity
     /**
      * Display an error dialog showing that Google Play Services is missing
      * or out of date.
+     *
      * @param connectionStatusCode code describing the presence (or lack of)
-     *     Google Play Services on this device.
+     *                             Google Play Services on this device.
      */
     void showGooglePlayServicesAvailabilityErrorDialog(
             final int connectionStatusCode) {
@@ -344,14 +353,12 @@ public class BeerListActivity extends AppCompatActivity
      * An asynchronous task that handles the Google Sheets API call.
      * Placing the API calls in their own task ensures the UI stays responsive.
      */
-    public class MakeRequestTask extends AsyncTask<Void, Void, List<Beer>> {
+    public class MakeGetRequest extends AsyncTask<Void, Void, List<Beer>> {
         private com.google.api.services.sheets.v4.Sheets mService = null;
         private Exception mLastError = null;
 
 
-        private List<Beer> makebeers = new ArrayList<>();
-
-        MakeRequestTask(GoogleAccountCredential credential) {
+        MakeGetRequest(GoogleAccountCredential credential) {
             HttpTransport transport = AndroidHttp.newCompatibleTransport();
             JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
             mService = new com.google.api.services.sheets.v4.Sheets.Builder(
@@ -362,6 +369,7 @@ public class BeerListActivity extends AppCompatActivity
 
         /**
          * Background task to call Google Sheets API.
+         *
          * @param params no parameters needed for this task.
          */
         @Override
@@ -374,10 +382,6 @@ public class BeerListActivity extends AppCompatActivity
                 return null;
             }
         }
-
-
-
-
 
         @Override
         protected void onPreExecute() {
@@ -426,4 +430,6 @@ public class BeerListActivity extends AppCompatActivity
             }
         }
     }
+
+
 }

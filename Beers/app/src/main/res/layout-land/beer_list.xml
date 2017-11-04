@@ -28,7 +28,9 @@
         app:layoutManager="LinearLayoutManager"
         tools:context="es.udc.fic.ipm.beers.BeerListActivity"
         tools:listitem="@layout/beer_list_content" />
-
+    <!--
+        android:id="@+id/prueba0001"
+        -->
     <FrameLayout
         android:id="@+id/beer_detail_container"
         android:layout_width="0dp"

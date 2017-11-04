@@ -2,10 +2,12 @@ package es.udc.fic.ipm.beers;
 
 import android.text.TextUtils;
 
+import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -162,6 +164,34 @@ public class BeerModel {
         beers = tempbeers;
         return tempbeers;
     }
+
+    public static Integer updateDataOnApi(com.google.api.services.sheets.v4.Sheets mService, Beer beer, String userComment) throws IOException {
+        String spreadsheetId = "1vPGNG_ek5T5I-1KQVPAhwMv6YOJEY1Dg5ZIhCPHA23I";
+        //celda que editaremos
+        String range = "E" + beer.getRowNum();
+        String actualComments = beer.getComment();
+        String newComment = userComment;
+        if (!TextUtils.isEmpty(actualComments))
+            actualComments = actualComments + "\n" + newComment;
+        else
+            actualComments = newComment;
+
+        List<List<Object>> values = new ArrayList<>();
+        List<Object> comments = new ArrayList<>();
+        comments.add(actualComments);
+        values.add((comments));
+        ValueRange body = new ValueRange()
+                .setValues(values);
+        UpdateValuesResponse result = result = mService.spreadsheets().values().update(spreadsheetId, range, body).setValueInputOption("RAW")
+                .execute();
+        //actualizamos la cerveza
+        beer.setComment(actualComments);
+
+
+        return(result.getUpdatedCells());
+    }
+
+
 
     //just for debug
     private static void printList(List<Beer> birras) {

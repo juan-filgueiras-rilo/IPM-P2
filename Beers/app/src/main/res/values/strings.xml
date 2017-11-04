@@ -24,4 +24,6 @@
     <string name="no_comment_available">Comment field is empty</string>
     <string name="no_more_info_available">More info field is empty</string>
     <string name="no_photo_available">Photo field is empty</string>
+    <string name="write_your_comment">Write here your new comment</string>
+    <string name="comment_ok">Your comment has been send succesfully</string>
 </resources>
