@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -55,11 +56,9 @@ public class BeerListActivity extends AppCompatActivity
         implements EasyPermissions.PermissionCallbacks {
 
 
-    private TextView mOutputText;
-    ProgressBar mProgress;
     private View recyclerView;
     private List<Beer> beers;
-    FloatingActionButton fab;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     static final int REQUEST_ACCOUNT_PICKER = 1000;
     static final int REQUEST_AUTHORIZATION = 1001;
@@ -85,7 +84,6 @@ public class BeerListActivity extends AppCompatActivity
         beers = new ArrayList<>();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_beer_list);
-        mProgress = (ProgressBar) findViewById(R.id.progress_bar);
         //mOutputText = (TextView) findViewById(R.id.output_text);
         recyclerView = findViewById(R.id.beer_list);
 
@@ -96,15 +94,11 @@ public class BeerListActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        mSwipeRefreshLayout = findViewById(R.id.swiperefresh);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onClick(View view) {
-                /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();*/
+            public void onRefresh() {
                 getResultsFromApi();
-                //makePutOnApi();
-                //setupRecyclerView((RecyclerView) recyclerView);
             }
         });
 
@@ -386,15 +380,12 @@ public class BeerListActivity extends AppCompatActivity
         @Override
         protected void onPreExecute() {
             //mOutputText.setText("");
-            mProgress.setVisibility(View.VISIBLE);
-            mProgress.animate();
-            fab.setVisibility(View.INVISIBLE);
 
         }
 
         @Override
         protected void onPostExecute(List<Beer> output) {
-            mProgress.setVisibility(View.INVISIBLE);
+            mSwipeRefreshLayout.setRefreshing(false);
             if (output == null || output.size() == 0) {
                 Snackbar.make(findViewById(android.R.id.content), getString(R.string.no_api_results), Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
@@ -403,14 +394,12 @@ public class BeerListActivity extends AppCompatActivity
                         Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
             setBeers(output);
-            fab.setVisibility(View.VISIBLE);
             setupRecyclerView((RecyclerView) recyclerView);
         }
 
         @Override
         protected void onCancelled() {
-            mProgress.setVisibility(View.INVISIBLE);
-            fab.setVisibility(View.VISIBLE);
+            mSwipeRefreshLayout.setRefreshing(false);
             if (mLastError != null) {
                 if (mLastError instanceof GooglePlayServicesAvailabilityIOException) {
                     showGooglePlayServicesAvailabilityErrorDialog(
