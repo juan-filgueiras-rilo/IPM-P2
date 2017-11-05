@@ -1,118 +1,165 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/ScrollView01"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:scrollbars="none" >
+<?xml version="1.0" encoding="utf-8"?>
 
-    <RelativeLayout
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+
+    <android.support.design.widget.FloatingActionButton xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/fab_message_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:foregroundGravity="top"
+        app:srcCompat="@android:drawable/stat_notify_chat"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"/>
+
+    <EditText
+        android:id="@+id/comment_edit_text_detail"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/edit_text_style"
+        android:hint="@string/write_your_comment"
+        android:padding="20dp"
+        android:visibility="invisible" />
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/ScrollView01"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:baselineAligned="false"
-        android:divider="?android:attr/dividerHorizontal"
-        android:showDividers="middle"
-        tools:context="es.udc.fic.ipm.beers.BeerDetailFragment">
+        android:fillViewport="true"
+        android:scrollbars="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_below="@id/comment_edit_text_detail">
 
 
-        <TextView
-            android:id="@+id/title_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="30dp"
-            android:textStyle="bold"
-            android:text="@string/beer_date" />
-        <TextView
-            android:id="@+id/content_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/title_date" />
 
-        <TextView
-            android:id="@+id/title_made_in"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="30dp"
-            android:textStyle="bold"
-            android:text="@string/beer_made_in"
-            android:layout_below="@id/content_date" />
-        <TextView
-            android:id="@+id/content_made_in"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/title_made_in" />
+        <RelativeLayout
+            xmlns:tools="http://schemas.android.com/tools"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:baselineAligned="false"
+            android:divider="?android:attr/dividerHorizontal"
+            android:showDividers="middle"
 
-        <TextView
-            android:id="@+id/title_type"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="30dp"
-            android:textStyle="bold"
-            android:text="@string/beer_type"
-            android:layout_below="@id/content_made_in" />
-        <TextView
-            android:id="@+id/content_type"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/title_type" />
+            tools:context="es.udc.fic.ipm.beers.BeerDetailFragment">
 
-        <TextView
-            android:id="@+id/title_comment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="30dp"
-            android:textStyle="bold"
-            android:text="@string/beer_comment"
-            android:layout_below="@id/content_type" />
-        <TextView
-            android:id="@+id/content_comment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/title_comment" />
 
-        <TextView
-            android:id="@+id/title_more_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="30dp"
-            android:textStyle="bold"
-            android:text="@string/beer_more_info"
-            android:layout_below="@id/content_comment" />
-        <TextView
-            android:id="@+id/content_more_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/title_more_info" />
 
-        <TextView
-            android:id="@+id/title_photo_url"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="30dp"
-            android:textStyle="bold"
-            android:text="@string/beer_photo_url"
-            android:layout_below="@id/content_more_info" />
-        <TextView
-            android:id="@+id/content_photo_url"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/title_photo_url" />
-        <TextView
-            android:id="@+id/title_photo_viewer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="30dp"
-            android:textStyle="bold"
-            android:text="@string/beer_photo"
-            android:layout_below="@id/content_photo_url" />
-        <ImageView
-            android:id="@+id/beer_photo_viewer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/title_photo_viewer"/>
 
-    </RelativeLayout>
 
-</ScrollView>
+
+            <TextView
+                android:id="@+id/title_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30dp"
+                android:textStyle="bold"
+                android:text="@string/beer_date" />
+            <TextView
+                android:id="@+id/content_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/title_date" />
+
+            <TextView
+                android:id="@+id/title_made_in"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30dp"
+                android:textStyle="bold"
+                android:text="@string/beer_made_in"
+                android:layout_below="@id/content_date" />
+            <TextView
+                android:id="@+id/content_made_in"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/title_made_in" />
+
+            <TextView
+                android:id="@+id/title_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30dp"
+                android:textStyle="bold"
+                android:text="@string/beer_type"
+                android:layout_below="@id/content_made_in" />
+            <TextView
+                android:id="@+id/content_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/title_type" />
+
+            <TextView
+                android:id="@+id/title_comment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30dp"
+                android:textStyle="bold"
+                android:text="@string/beer_comment"
+                android:layout_below="@id/content_type" />
+            <TextView
+                android:id="@+id/content_comment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/title_comment" />
+
+            <TextView
+                android:id="@+id/title_more_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30dp"
+                android:textStyle="bold"
+                android:text="@string/beer_more_info"
+                android:layout_below="@id/content_comment" />
+            <TextView
+                android:id="@+id/content_more_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/title_more_info" />
+
+            <TextView
+                android:id="@+id/title_photo_url"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30dp"
+                android:textStyle="bold"
+                android:text="@string/beer_photo_url"
+                android:layout_below="@id/content_more_info" />
+            <TextView
+                android:id="@+id/content_photo_url"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/title_photo_url" />
+            <TextView
+                android:id="@+id/title_photo_viewer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30dp"
+                android:textStyle="bold"
+                android:text="@string/beer_photo"
+                android:layout_below="@id/content_photo_url" />
+            <ImageView
+                android:id="@+id/beer_photo_viewer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/title_photo_viewer"/>
+
+
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+
+</RelativeLayout>

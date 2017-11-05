@@ -65,6 +65,9 @@ public class BeerListActivity extends AppCompatActivity
     static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
     static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
 
+
+    private int beerIndex;
+    private String newComment;
     GoogleAccountCredential mCredential;
 
 
@@ -102,6 +105,10 @@ public class BeerListActivity extends AppCompatActivity
             }
         });
 
+
+        //aqui dibujamos ya la recyclerview para que no de errores
+        setupRecyclerView((RecyclerView) recyclerView);
+
         if (findViewById(R.id.beer_detail_container) != null) {
             // The detail container view will be present only in the
             // large-screen layouts (res/values-w900dp).
@@ -109,11 +116,20 @@ public class BeerListActivity extends AppCompatActivity
             // activity should be in two-pane mode.
             mTwoPane = true;
         }
-        getResultsFromApi();
-
-
+        beers = BeerModel.getBeers();
+        if (beers == null || beers.size() == 0) {
+            getResultsFromApi();
+        }
+        else {
+            assert recyclerView != null;
+            setupRecyclerView((RecyclerView) recyclerView);
+        }
+        /*getResultsFromApi();
         assert recyclerView != null;
-        setupRecyclerView((RecyclerView) recyclerView);
+        setupRecyclerView((RecyclerView) recyclerView);*/
+
+
+
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
@@ -400,6 +416,114 @@ public class BeerListActivity extends AppCompatActivity
         @Override
         protected void onCancelled() {
             mSwipeRefreshLayout.setRefreshing(false);
+            if (mLastError != null) {
+                if (mLastError instanceof GooglePlayServicesAvailabilityIOException) {
+                    showGooglePlayServicesAvailabilityErrorDialog(
+                            ((GooglePlayServicesAvailabilityIOException) mLastError)
+                                    .getConnectionStatusCode());
+                } else if (mLastError instanceof UserRecoverableAuthIOException) {
+                    startActivityForResult(
+                            ((UserRecoverableAuthIOException) mLastError).getIntent(),
+                            BeerListActivity.REQUEST_AUTHORIZATION);
+                } else {
+                    Snackbar.make(findViewById(android.R.id.content), mLastError.getMessage(), Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
+            } else {
+                Snackbar.make(findViewById(android.R.id.content), R.string.request_cancelled, Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        }
+    }
+
+
+
+
+
+
+    public void makePostOnApi(String userComment, int index) {
+        newComment = userComment;
+        beerIndex = index;
+        if (!isGooglePlayServicesAvailable()) {
+            acquireGooglePlayServices();
+        } else if (mCredential.getSelectedAccountName() == null) {
+            chooseAccount();
+        } else if (!isDeviceOnline()) {
+            //mOutputText.setText("No network connection available.");
+            //mOutputText.setText(getString(R.string.no_connection_available));
+            Snackbar.make(findViewById(android.R.id.content), getString(R.string.no_connection_available), Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+
+            return;
+        } else {
+            new BeerListActivity.MakePutRequest(mCredential).execute();
+
+        }
+    }
+
+    /**
+     * An asynchronous task that handles the Google Sheets API call.
+     * Placing the API calls in their own task ensures the UI stays responsive.
+     */
+    public class MakePutRequest extends AsyncTask<Void, Void, Integer> {
+        private com.google.api.services.sheets.v4.Sheets mService = null;
+        private Exception mLastError = null;
+
+
+        MakePutRequest(GoogleAccountCredential credential) {
+            HttpTransport transport = AndroidHttp.newCompatibleTransport();
+            JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+            mService = new com.google.api.services.sheets.v4.Sheets.Builder(
+                    transport, jsonFactory, credential)
+                    .setApplicationName(getString(R.string.app_name))
+                    .build();
+        }
+
+        /**
+         * Background task to call Google Sheets API.
+         *
+         * @param params no parameters needed for this task.
+         */
+        @Override
+        protected Integer doInBackground(Void... params) {
+            try {
+                Beer beer = BeerModel.getBeers().get(beerIndex);
+                return BeerModel.updateDataOnApi(mService, beer, newComment);
+            } catch (Exception e) {
+                mLastError = e;
+                cancel(true);
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+            //mOutputText.setText("");
+            //mProgress.setVisibility(View.VISIBLE);
+            //mProgress.animate();
+            //fab.setVisibility(View.INVISIBLE);
+
+        }
+
+        @Override
+        protected void onPostExecute(Integer entero) {
+            //mProgress.setVisibility(View.INVISIBLE);
+            if (entero == 0 || entero == null) {
+                Snackbar.make(findViewById(android.R.id.content), getString(R.string.no_api_results), Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            } else {
+                Snackbar.make(findViewById(android.R.id.content), getString(R.string.comment_ok), Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+            //actualizamos el texto en la pantalla
+            TextView commentTextView = (TextView) findViewById(R.id.content_comment);
+            commentTextView.setText(BeerModel.getBeers().get(beerIndex).getComment());
+        }
+
+        @Override
+        protected void onCancelled() {
+            //mProgress.setVisibility(View.INVISIBLE);
+            //fab.setVisibility(View.VISIBLE);
             if (mLastError != null) {
                 if (mLastError instanceof GooglePlayServicesAvailabilityIOException) {
                     showGooglePlayServicesAvailabilityErrorDialog(

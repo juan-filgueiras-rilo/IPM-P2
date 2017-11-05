@@ -3,10 +3,13 @@ package es.udc.fic.ipm.beers;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -35,6 +38,11 @@ public class BeerDetailFragment extends Fragment {
      */
     //private DummyContent.DummyItem mItem;
     private Beer beer;
+    private EditText editText;
+    private String newComment;
+    private int beerIndex;
+    private View rootView;
+    FloatingActionButton fab;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -62,13 +70,61 @@ public class BeerDetailFragment extends Fragment {
                 appBarLayout.setTitle(beer.getName());
             }
         }
+
+
+
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.beer_detail, container, false);
+        rootView = inflater.inflate(R.layout.beer_detail, container, false);
+
+        editText = (EditText) rootView.findViewById(R.id.comment_edit_text_detail);
+
+        fab = (FloatingActionButton) rootView.findViewById(R.id.fab_message_detail);
+        if (getResources().getConfiguration().orientation != 1)
+            fab.setVisibility(View.VISIBLE);
+        else
+            fab.setVisibility(View.INVISIBLE);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //tumbado
+                if (getResources().getConfiguration().orientation != 1) {
+                    //si estaba sin mostrar, lo mostramos
+                    if (editText.getVisibility() == View.INVISIBLE) {
+                        editText.setVisibility(View.VISIBLE);
+                        //editText.setHeight(200);
+                        //editText.getLayoutParams().height=200;
+                    } else {
+                        //sino, cogemos el texto que se haya escrito, y lo volvemos invisible
+                        //cogemos lo que ha introducido el usuario
+                        String textInput = editText.getText().toString();
+                        //miramos que haya introducido algo
+                        if (!TextUtils.isEmpty(textInput)) {
+                            newComment = textInput;
+                            //para saber en que cerveza estamos, podemos hacer un atributo en el modelo (int) que nos diga cual
+                            //ha sido la ultima cerveza seleccionada, cogiendo el titulo del toolbar me parece mas elegante
+                            beerIndex = BeerModel.findByName(beer.getName());
+                            BeerListActivity beerListActivity = (BeerListActivity)getActivity();
+                            beerListActivity.makePostOnApi(newComment, beerIndex);
+                            //llamamos al post
+                            //makePostOnApi();
+                        }
+                        editText.setText("");
+                        //editText.setHeight(0);
+                        //editText.getLayoutParams().height=0;
+                        editText.setVisibility(View.INVISIBLE);
+                    }
+                }
+                //cuando clicamos en el boton, actualizamos el comentario
+            }
+        });
+
+
         // Show the dummy content as text in a TextView.
         if (beer != null) {
             int cantidad = BeerModel.getBeers().size();

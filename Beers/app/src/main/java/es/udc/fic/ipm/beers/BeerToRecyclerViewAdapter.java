@@ -30,7 +30,6 @@ public class BeerToRecyclerViewAdapter
             Beer beer = (Beer) view.getTag();
             if (mTwoPane) {
                 //por aqui entro cuando la pantalla SI esta girada
-                System.out.println("hola100");
                 Bundle arguments = new Bundle();
                 //arguments.putString(BeerDetailFragment.ARG_ITEM_ID, item.id);
                 arguments.putString(BeerDetailFragment.ARG_ITEM_ID, beer.getName());

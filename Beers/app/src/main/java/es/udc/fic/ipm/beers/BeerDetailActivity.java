@@ -358,7 +358,27 @@ public class BeerDetailActivity extends AppCompatActivity implements EasyPermiss
         dialog.show();
     }
 
-    private void makePostOnApi() {
+    public void makePostOnApi() {
+        if (!isGooglePlayServicesAvailable()) {
+            acquireGooglePlayServices();
+        } else if (mCredential.getSelectedAccountName() == null) {
+            chooseAccount();
+        } else if (!isDeviceOnline()) {
+            //mOutputText.setText("No network connection available.");
+            //mOutputText.setText(getString(R.string.no_connection_available));
+            Snackbar.make(findViewById(android.R.id.content), getString(R.string.no_connection_available), Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+
+            return;
+        } else {
+            new BeerDetailActivity.MakePutRequest(mCredential).execute();
+
+        }
+    }
+
+    public void makePostOnApi(String userComment, int index) {
+        newComment = userComment;
+        beerIndex = index;
         if (!isGooglePlayServicesAvailable()) {
             acquireGooglePlayServices();
         } else if (mCredential.getSelectedAccountName() == null) {
