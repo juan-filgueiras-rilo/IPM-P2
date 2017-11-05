@@ -2,11 +2,18 @@ package es.udc.fic.ipm.beers;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import java.util.List;
 
@@ -71,6 +78,25 @@ public class BeerToRecyclerViewAdapter
         //holder.mContentView.setText(mValues.get(position).content);
 
         holder.nameView.setText(mValues.get(position).getName());
+        ImageLoader imageLoader = ImageLoader.getInstance();
+
+        /*ImageSize targetSize = new ImageSize(200, 50); // result Bitmap will be fit to this size
+        imageLoader.loadImage(mValues.get(position).getPhotoURL(), targetSize, new SimpleImageLoadingListener() {
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                holder.imageView.setImageBitmap(loadedImage);
+            }
+        });*/
+
+        //si el imageloader ya está iniciado, no hacemos nada
+        //if (!imageLoader.isInited())
+            //imageLoader.init(ImageLoaderConfiguration.createDefault(getContext()));
+        //imageLoader.displayImage(mValues.get(position).getPhotoURL(), holder.imageView);
+        //imageLoader.displayImage(mValues.get(position).getPhotoURL(), holder.circleImageView);
+        imageLoader.displayImage(mValues.get(position).getPhotoURL(), holder.roundedImageView);
+        //imageLoader.displayImage(mValues.get(position).getPhotoURL(), holder.circularImageView);
+
+
             /*holder.dateView.setText(mValues.get(position).getDate());
             holder.madeInView.setText(mValues.get(position).getMadeIn());
             holder.typeView.setText(mValues.get(position).getType());
