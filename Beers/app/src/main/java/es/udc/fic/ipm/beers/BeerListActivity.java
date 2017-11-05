@@ -121,6 +121,8 @@ public class BeerListActivity extends AppCompatActivity
             mTwoPane = true;
         }
         beers = BeerModel.getBeers();
+        //sólo recargo los datos de las cervezas si aún no hay datos, después
+        //solo recargo actualizando la vista con el swiperefresh
         if (beers == null || beers.size() == 0) {
             getResultsFromApi();
         }

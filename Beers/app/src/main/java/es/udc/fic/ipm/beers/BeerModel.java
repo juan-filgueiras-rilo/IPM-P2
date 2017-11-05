@@ -165,6 +165,17 @@ public class BeerModel {
         return tempbeers;
     }
 
+
+    /**
+     * Se hace un put al recurso que contiene la hoja de cálculo y se devuelve el número
+     * de celdas modificadas para comprobar que se ha realizado la operación con éxito
+     * @param mService servicio de google
+     * @param beer cerveza que quiero modificar
+     * @param userComment comentario introducido por el usuario
+     * @param accountName nombre de la cuenta del usuario
+     * @return entero que me devuelve el número de celdas modificadas
+     * @throws IOException
+     */
     public static Integer updateDataOnApi(com.google.api.services.sheets.v4.Sheets mService, Beer beer, String userComment, String accountName) throws IOException {
         String spreadsheetId = "1vPGNG_ek5T5I-1KQVPAhwMv6YOJEY1Dg5ZIhCPHA23I";
         //celda que editaremos

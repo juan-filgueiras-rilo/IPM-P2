@@ -2,18 +2,13 @@ package es.udc.fic.ipm.beers;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.ImageSize;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import java.util.List;
 
@@ -25,11 +20,18 @@ public class BeerToRecyclerViewAdapter
         extends RecyclerView.Adapter<ViewHolder> {
 
     private final BeerListActivity mParentActivity;
-    //private final List<DummyContent.DummyItem> mValues;
     private final List<Beer> mValues;
     private final boolean mTwoPane;
 
-
+    /**
+     * Método que se ejecuta cuando se hace selecciona un elemento de
+     * la lista.
+     * Si la pantalla está girada se actualiza el fragmento (ubicado en la parte derecha)
+     * que muestra los detalles del elemento seleccionado, pasándole al fragmento dicho
+     * elemento.
+     * Si la pantalla no está girada, se inicia una nueva actividad (BeerDetailActivity)
+     * asociándole el fragmento que muestra los detalles de una nueva cerveza.
+     */
     private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -38,26 +40,32 @@ public class BeerToRecyclerViewAdapter
             if (mTwoPane) {
                 //por aqui entro cuando la pantalla SI esta girada
                 Bundle arguments = new Bundle();
-                //arguments.putString(BeerDetailFragment.ARG_ITEM_ID, item.id);
+                //establecemos los argumentos que pasaremos al fragmento (posicion de la cerveza
+                //y nombre)
                 arguments.putString(BeerDetailFragment.ARG_ITEM_ID, beer.getName());
+                //creo el nuevo fragmento
                 BeerDetailFragment fragment = new BeerDetailFragment();
+                //le paso los parámetros
                 fragment.setArguments(arguments);
+                //cambio el fragmento anterior por el nuevo, mostrando así los detalles de
+                //la última cerveza seleccionada
                 mParentActivity.getSupportFragmentManager().beginTransaction()
                         .replace(R.id.beer_detail_container, fragment)
                         .commit();
             } else {
                 //por aqui entro cuando la pantalla NO esta girada
                 Context context = view.getContext();
+                //creamos la nueva actividad
                 Intent intent = new Intent(context, BeerDetailActivity.class);
-                //intent.putExtra(BeerDetailFragment.ARG_ITEM_ID, item.id);
+                //le asoaciamos el fragmento que muestra los detalles de la cerveza
                 intent.putExtra(BeerDetailFragment.ARG_ITEM_ID, beer.getName());
+                //lanzamos la actividad
                 context.startActivity(intent);
             }
         }
     };
 
     BeerToRecyclerViewAdapter(BeerListActivity parent,
-                              //List<DummyContent.DummyItem> items,
                               List<Beer> items,
                               boolean twoPane) {
         mValues = items;
@@ -72,36 +80,21 @@ public class BeerToRecyclerViewAdapter
         return new ViewHolder(view);
     }
 
+    /**
+     *
+     * @param holder
+     * @param position
+     */
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        //holder.mIdView.setText(mValues.get(position).id);
-        //holder.mContentView.setText(mValues.get(position).content);
 
         holder.nameView.setText(mValues.get(position).getName());
         ImageLoader imageLoader = ImageLoader.getInstance();
 
-        /*ImageSize targetSize = new ImageSize(200, 50); // result Bitmap will be fit to this size
-        imageLoader.loadImage(mValues.get(position).getPhotoURL(), targetSize, new SimpleImageLoadingListener() {
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                holder.imageView.setImageBitmap(loadedImage);
-            }
-        });*/
-
-        //si el imageloader ya está iniciado, no hacemos nada
-        //if (!imageLoader.isInited())
-            //imageLoader.init(ImageLoaderConfiguration.createDefault(getContext()));
         //imageLoader.displayImage(mValues.get(position).getPhotoURL(), holder.imageView);
         //imageLoader.displayImage(mValues.get(position).getPhotoURL(), holder.circleImageView);
         imageLoader.displayImage(mValues.get(position).getPhotoURL(), holder.roundedImageView);
         //imageLoader.displayImage(mValues.get(position).getPhotoURL(), holder.circularImageView);
-
-
-            /*holder.dateView.setText(mValues.get(position).getDate());
-            holder.madeInView.setText(mValues.get(position).getMadeIn());
-            holder.typeView.setText(mValues.get(position).getType());
-            holder.commentView.setText(mValues.get(position).getcomment());
-            holder.moreInfoView.setText(mValues.get(position).getMoreInfo());*/
 
         holder.itemView.setTag(mValues.get(position));
         holder.itemView.setOnClickListener(mOnClickListener);
