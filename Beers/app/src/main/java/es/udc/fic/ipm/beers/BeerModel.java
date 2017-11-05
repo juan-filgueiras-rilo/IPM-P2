@@ -165,11 +165,12 @@ public class BeerModel {
         return tempbeers;
     }
 
-    public static Integer updateDataOnApi(com.google.api.services.sheets.v4.Sheets mService, Beer beer, String userComment) throws IOException {
+    public static Integer updateDataOnApi(com.google.api.services.sheets.v4.Sheets mService, Beer beer, String userComment, String accountName) throws IOException {
         String spreadsheetId = "1vPGNG_ek5T5I-1KQVPAhwMv6YOJEY1Dg5ZIhCPHA23I";
         //celda que editaremos
         String range = "E" + beer.getRowNum();
         String actualComments = beer.getComment();
+        userComment = "\"" + userComment + "\"" + " - " + accountName;
         String newComment = userComment;
         if (!TextUtils.isEmpty(actualComments))
             actualComments = actualComments + "\n" + newComment;
@@ -182,8 +183,8 @@ public class BeerModel {
         values.add((comments));
         ValueRange body = new ValueRange()
                 .setValues(values);
-        UpdateValuesResponse result = result = mService.spreadsheets().values().update(spreadsheetId, range, body).setValueInputOption("RAW")
-                .execute();
+        UpdateValuesResponse result = mService.spreadsheets().values()
+                .update(spreadsheetId, range, body).setValueInputOption("RAW").execute();
         //actualizamos la cerveza
         beer.setComment(actualComments);
 

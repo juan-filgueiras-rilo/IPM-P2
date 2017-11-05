@@ -159,7 +159,7 @@ public class BeerListActivity extends AppCompatActivity
         if (!isGooglePlayServicesAvailable()) {
             acquireGooglePlayServices();
         } else if (mCredential.getSelectedAccountName() == null) {
-            chooseAccount();
+            chooseAccount(1);
         } else if (!isDeviceOnline()) {
             //mOutputText.setText("No network connection available.");
             //mOutputText.setText(getString(R.string.no_connection_available));
@@ -187,14 +187,18 @@ public class BeerListActivity extends AppCompatActivity
      * is granted.
      */
     @AfterPermissionGranted(REQUEST_PERMISSION_GET_ACCOUNTS)
-    private void chooseAccount() {
+    private void chooseAccount(int opType) {
         if (EasyPermissions.hasPermissions(
                 getApplicationContext(), android.Manifest.permission.GET_ACCOUNTS)) {
             String accountName = getPreferences(Context.MODE_PRIVATE)
                     .getString(PREF_ACCOUNT_NAME, null);
             if (accountName != null) {
                 mCredential.setSelectedAccountName(accountName);
-                getResultsFromApi();
+                //dependiendo de la operacion que la llame, hago una cosa u otra
+                if (opType == 1)
+                    getResultsFromApi();
+                else if (opType == 2)
+                    makePostOnApi(newComment, beerIndex);
             } else {
                 // Start a dialog from which the user can choose an account
                 startActivityForResult(
@@ -451,7 +455,7 @@ public class BeerListActivity extends AppCompatActivity
         if (!isGooglePlayServicesAvailable()) {
             acquireGooglePlayServices();
         } else if (mCredential.getSelectedAccountName() == null) {
-            chooseAccount();
+            chooseAccount(2);
         } else if (!isDeviceOnline()) {
             //mOutputText.setText("No network connection available.");
             //mOutputText.setText(getString(R.string.no_connection_available));
@@ -492,7 +496,7 @@ public class BeerListActivity extends AppCompatActivity
         protected Integer doInBackground(Void... params) {
             try {
                 Beer beer = BeerModel.getBeers().get(beerIndex);
-                return BeerModel.updateDataOnApi(mService, beer, newComment);
+                return BeerModel.updateDataOnApi(mService, beer, newComment, mCredential.getSelectedAccountName());
             } catch (Exception e) {
                 mLastError = e;
                 cancel(true);

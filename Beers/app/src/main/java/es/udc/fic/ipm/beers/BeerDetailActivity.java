@@ -423,7 +423,7 @@ public class BeerDetailActivity extends AppCompatActivity implements EasyPermiss
         protected Integer doInBackground(Void... params) {
             try {
                 Beer beer = BeerModel.getBeers().get(beerIndex);
-                return BeerModel.updateDataOnApi(mService, beer, newComment);
+                return BeerModel.updateDataOnApi(mService, beer, newComment, mCredential.getSelectedAccountName());
             } catch (Exception e) {
                 mLastError = e;
                 cancel(true);
