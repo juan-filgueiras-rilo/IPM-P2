@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class BeerToRecyclerViewAdapter
     private final BeerListActivity mParentActivity;
     private final List<Beer> mValues;
     private final boolean mTwoPane;
+    private final GoogleAccountCredential mCredential;
 
     /**
      * Método que se ejecuta cuando se hace selecciona un elemento de
@@ -59,6 +61,8 @@ public class BeerToRecyclerViewAdapter
                 Intent intent = new Intent(context, BeerDetailActivity.class);
                 //le asoaciamos el fragmento que muestra los detalles de la cerveza
                 intent.putExtra(BeerDetailFragment.ARG_ITEM_ID, beer.getName());
+                //pasamos las credenciales a la actividdad de los detalles
+                intent.putExtra("googleCredential", mCredential.getSelectedAccountName());
                 //lanzamos la actividad
                 context.startActivity(intent);
             }
@@ -67,10 +71,12 @@ public class BeerToRecyclerViewAdapter
 
     BeerToRecyclerViewAdapter(BeerListActivity parent,
                               List<Beer> items,
-                              boolean twoPane) {
+                              boolean twoPane,
+                              GoogleAccountCredential passedCredential) {
         mValues = items;
         mParentActivity = parent;
         mTwoPane = twoPane;
+        mCredential = passedCredential;
     }
 
     @Override

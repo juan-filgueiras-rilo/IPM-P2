@@ -92,9 +92,12 @@ public class BeerListActivity extends AppCompatActivity
         //mOutputText = (TextView) findViewById(R.id.output_text);
         recyclerView = findViewById(R.id.beer_list);
 
+
         mCredential = GoogleAccountCredential.usingOAuth2(
                 getApplicationContext(), Arrays.asList(SCOPES))
                 .setBackOff(new ExponentialBackOff());
+        //mando el mCredential entre actividades
+        //mCredential.setSelectedAccountName(mCredential.getSelectedAccountName())
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -140,7 +143,7 @@ public class BeerListActivity extends AppCompatActivity
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
         //recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, DummyContent.ITEMS, mTwoPane));
-        recyclerView.setAdapter(new BeerToRecyclerViewAdapter(this, beers, mTwoPane));
+        recyclerView.setAdapter(new BeerToRecyclerViewAdapter(this, beers, mTwoPane, mCredential));
 
 
     }
