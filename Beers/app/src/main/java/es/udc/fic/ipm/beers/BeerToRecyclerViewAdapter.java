@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.net.SocketTimeoutException;
 import java.util.List;
 
 /**
@@ -93,7 +94,9 @@ public class BeerToRecyclerViewAdapter
 
         //imageLoader.displayImage(mValues.get(position).getPhotoURL(), holder.imageView);
         //imageLoader.displayImage(mValues.get(position).getPhotoURL(), holder.circleImageView);
+        //el sockettimeoutexception lo da aqui
         imageLoader.displayImage(mValues.get(position).getPhotoURL(), holder.roundedImageView);
+
         //imageLoader.displayImage(mValues.get(position).getPhotoURL(), holder.circularImageView);
 
         holder.itemView.setTag(mValues.get(position));
