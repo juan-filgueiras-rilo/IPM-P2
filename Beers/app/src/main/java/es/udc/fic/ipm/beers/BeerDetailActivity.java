@@ -80,11 +80,10 @@ public class BeerDetailActivity extends AppCompatActivity {
         mCredential = GoogleAccountCredential.usingOAuth2(
                 getApplicationContext(), Arrays.asList(SCOPES))
                 .setBackOff(new ExponentialBackOff());
-        //recibo las credenciales del adaptador
-        String credenciales = getIntent().getStringExtra("googleCredential");
-        mCredential.setSelectedAccountName(credenciales);
-
-
+        //cojo el nombre de la cuenta de las sharedPreferences
+        SharedPreferences sharedPref = getSharedPreferences("SharedPref", Context.MODE_PRIVATE);
+        String pruebaCuenta = sharedPref.getString("googleAccount", "");
+        mCredential.setSelectedAccountName(pruebaCuenta);
 
 
         //si tengo los detalles de una cerveza abiertos y giro la pantalla, vuelvo a la

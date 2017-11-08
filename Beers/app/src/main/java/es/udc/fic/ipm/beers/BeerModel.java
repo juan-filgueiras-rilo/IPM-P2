@@ -224,14 +224,18 @@ public class BeerModel {
     }
 
     public static int findByName(String name) {
-        for (int i = 0; i < beers.size(); i++) {
-            //System.out.println("nombre_stock: " + beers.get(i).getName() + " nombre parametro: " + name);
-            //System.out.println("igual?? " + (beers.get(i).getName().equals(name)));
-            if (beers.get(i).getName().equals(name)) {
-                return i;
+        if (!TextUtils.isEmpty(name)) {
+            for (int i = 0; i < beers.size(); i++) {
+                //System.out.println("nombre_stock: " + beers.get(i).getName() + " nombre parametro: " + name);
+                //System.out.println("igual?? " + (beers.get(i).getName().equals(name)));
+                if (beers.get(i).getName().equals(name)) {
+                    return i;
+                }
             }
-
         }
+        System.out.println("hola2");
         return (-1);
+
+
     }
 }

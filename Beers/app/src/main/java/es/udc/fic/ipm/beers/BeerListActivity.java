@@ -143,7 +143,7 @@ public class BeerListActivity extends AppCompatActivity
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
         //recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, DummyContent.ITEMS, mTwoPane));
-        recyclerView.setAdapter(new BeerToRecyclerViewAdapter(this, beers, mTwoPane, mCredential));
+        recyclerView.setAdapter(new BeerToRecyclerViewAdapter(this, beers, mTwoPane));
 
 
     }
@@ -198,6 +198,11 @@ public class BeerListActivity extends AppCompatActivity
             String accountName = getPreferences(Context.MODE_PRIVATE)
                     .getString(PREF_ACCOUNT_NAME, null);
             if (accountName != null) {
+                //guardamos el nombre de la cuenta como una sharedpreference para compartir entre actividades
+                SharedPreferences sharedPref = getSharedPreferences("SharedPref", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString("googleAccount", accountName);
+                editor.commit();
                 mCredential.setSelectedAccountName(accountName);
                 //dependiendo de la operacion que la llame, hago una cosa u otra
                 if (opType == 1)
