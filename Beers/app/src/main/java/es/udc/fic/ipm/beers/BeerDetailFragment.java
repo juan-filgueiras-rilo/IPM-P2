@@ -83,20 +83,32 @@ public class BeerDetailFragment extends Fragment {
 
         editText = (EditText) rootView.findViewById(R.id.comment_edit_text_detail);
 
+
         fab = (FloatingActionButton) rootView.findViewById(R.id.fab_message_detail);
-        if (getResources().getConfiguration().orientation != 1)
+        //if (getResources().getConfiguration().orientation != 1)
+        //quiero que cuando los detalles se muestren en una única pantalla se oculte el botón
+        //que debería mostrarse cuando los detalles se están mostrando en pantalla doble, es
+        //decir, cuando la clase padre es BeerDetailActivity se oculta, y cuando es
+        //BeerListActivity, se muestran
+        if (!getActivity().getLocalClassName().equals("BeerDetailActivity"))
             fab.setVisibility(View.VISIBLE);
         else
             fab.setVisibility(View.INVISIBLE);
 
+
+
+        //esta parte del código sólo se ejecuta cuadno estoy en la actividad BeerListActivity
+        //cuando estoy en BeerDetailActivity, se meten los datos desde ahí
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //tumbado
-                if (getResources().getConfiguration().orientation != 1) {
+                //detalles en una única pantalla
+                if (!getActivity().getLocalClassName().equals("BeerDetailActivity")) {
                     //si estaba sin mostrar, lo mostramos
                     if (editText.getVisibility() == View.INVISIBLE) {
                         editText.setVisibility(View.VISIBLE);
+                        //ponemos el foco sobre el campo de texto
+                        editText.requestFocus();
                         //editText.setHeight(200);
                         //editText.getLayoutParams().height=200;
                     } else {

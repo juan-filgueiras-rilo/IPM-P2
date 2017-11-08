@@ -233,7 +233,6 @@ public class BeerModel {
                 }
             }
         }
-        System.out.println("hola2");
         return (-1);
 
 

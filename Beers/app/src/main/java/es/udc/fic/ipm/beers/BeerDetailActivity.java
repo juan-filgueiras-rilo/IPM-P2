@@ -132,6 +132,8 @@ public class BeerDetailActivity extends AppCompatActivity {
                         .setAction("Action", null).show();*/
                 //si estaba sin mostrar, lo mostramos
                 if (editText.getVisibility() == View.INVISIBLE) {
+                    //ponemos el foco sobre el campo de texto
+                    editText.requestFocus();
                     editText.setVisibility(View.VISIBLE);
                 } else {
                     //sino, cogemos el texto que se haya escrito, y lo volvemos invisible
