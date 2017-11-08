@@ -26,4 +26,5 @@
     <string name="no_photo_available">Photo field is empty</string>
     <string name="write_your_comment">Write here your new comment</string>
     <string name="comment_ok">Your comment has been send succesfully</string>
+    <string name="account_name">Account name</string>
 </resources>
