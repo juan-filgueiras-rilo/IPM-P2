@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">Cervezas</string>
+    <string name="title_beer_detail">Detalles de cerveza</string>
+    <string name="api_call">Llamada al API</string>
+    <string name="click_on_the_button">Click en el botón</string>
+    <string name="no_connection_available">Sin conexión de red.</string>
+    <string name="needs_get_accounts_permission">Esta aplicación necesita acceder a tu cuenta de Google (via Contactos).</string>
+    <string name="needs_google_play_services">Esta aplicación necesita los Servicios de Google Play. Por favor instala los Servicios de Google Play en tu dispositivo y reinicia la aplicación.</string>
+    <string name="no_api_results">No se han devuelto resultados.</string>
+    <string name="data_retrieved">Datos obtenidos usando el API de Google Sheets y la cuenta %s</string>
+    <string name="error_header">Ocurrió el siguiente error: %s</string>
+    <string name="request_cancelled">Solicitud cancelada.</string>
+    <string name="beer_name">Nombre</string>
+    <string name="beer_date">Fecha</string>
+    <string name="beer_made_in">Origen</string>
+    <string name="beer_type">Clase</string>
+    <string name="beer_comment">Comentarios</string>
+    <string name="beer_more_info">Más info</string>
+    <string name="beer_photo_url">URL de foto</string>
+    <string name="beer_photo">Foto chillout</string>
+    <string name="no_date_available">El campo fecha está vacío</string>
+    <string name="no_made_in_available">El campo origen está vacío</string>
+    <string name="no_type_available">El campo clase está vacío</string>
+    <string name="no_comment_available">El campo comentarios está vacío</string>
+    <string name="no_more_info_available">El campo más info está vacío</string>
+    <string name="no_photo_available">El campo foto está vacío</string>
+    <string name="write_your_comment">Escribe aquí tu comentario</string>
+    <string name="comment_ok">Tu comentario se ha registrado satisfactoriamente</string>
+    <string name="account_name">Nombre de cuenta</string>
+</resources>
