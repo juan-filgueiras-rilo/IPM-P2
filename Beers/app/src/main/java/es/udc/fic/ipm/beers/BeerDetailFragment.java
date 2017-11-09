@@ -60,6 +60,7 @@ public class BeerDetailFragment extends Fragment {
     private static final String[] SCOPES = {SheetsScopes.SPREADSHEETS};
     ViewGroup viewGroup;
     ProgressBar mProgress;
+    private int previousETHeight = 0;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -110,15 +111,6 @@ public class BeerDetailFragment extends Fragment {
 
 
         fab = (FloatingActionButton) rootView.findViewById(R.id.fab_message_detail);
-        //if (getResources().getConfiguration().orientation != 1)
-        //quiero que cuando los detalles se muestren en una única pantalla se oculte el botón
-        //que debería mostrarse cuando los detalles se están mostrando en pantalla doble, es
-        //decir, cuando la clase padre es BeerDetailActivity se oculta, y cuando es
-        //BeerListActivity, se muestran
-        if (!getActivity().getLocalClassName().equals("BeerDetailActivity"))
-            fab.setVisibility(View.VISIBLE);
-        else
-            fab.setVisibility(View.INVISIBLE);
 
         fab.setVisibility(View.VISIBLE);
 
@@ -126,12 +118,13 @@ public class BeerDetailFragment extends Fragment {
 
         //esta parte del código sólo se ejecuta cuadno estoy en la actividad BeerListActivity
         //cuando estoy en BeerDetailActivity, se meten los datos desde ahí
-
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 //si estaba sin mostrar, lo mostramos
                 if (editText.getVisibility() == View.INVISIBLE) {
+                    previousETHeight = editText.getLayoutParams().height;
                     //adaptamos el tamaño al contenido y lo mostramos
                     editText.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
                     editText.setVisibility(View.VISIBLE);
@@ -154,7 +147,7 @@ public class BeerDetailFragment extends Fragment {
                     }
                     editText.setText("");
                     editText.setVisibility(View.INVISIBLE);
-                    editText.getLayoutParams().height = 100;
+                    editText.getLayoutParams().height = previousETHeight;
                 }
             }
             //cuando clicamos en el boton, actualizamos el comentario
@@ -188,6 +181,7 @@ public class BeerDetailFragment extends Fragment {
             ((TextView) rootView.findViewById(R.id.content_type)).setText(type);
             ((TextView) rootView.findViewById(R.id.content_comment)).setText(comment);
             ((TextView) rootView.findViewById(R.id.content_more_info)).setText(moreInfo);
+            //((TextView) rootView.findViewById(R.id.content_name)).setText(beer.getName());
 
 
             ImageView imageview = (ImageView) rootView.findViewById(R.id.beer_photo_viewer);
@@ -200,11 +194,9 @@ public class BeerDetailFragment extends Fragment {
             //si estoy en pantalla única, muestro la imagen en el toolbar, sino, la muestro
             //en un campo más, y lo mismo con los campos del nombre, si estoy en modo unica
             //pantalla los oculto, sino, los muestro
-            TextView textViewNameTitle = (TextView) rootView.findViewById(R.id.title_name);
             TextView textViewNameContent = (TextView) rootView.findViewById(R.id.content_name);
             if (toolbarImage != null) {
                 imageLoader.displayImage(beer.getPhotoURL(), toolbarImage);
-                textViewNameTitle.getLayoutParams().height = 0;
                 textViewNameContent.getLayoutParams().height = 0;
             } else {
                 textViewNameContent.setText(beer.getName());
