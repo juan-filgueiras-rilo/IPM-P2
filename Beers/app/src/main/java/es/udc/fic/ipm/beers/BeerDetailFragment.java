@@ -60,6 +60,7 @@ public class BeerDetailFragment extends Fragment {
     private static final String[] SCOPES = {SheetsScopes.SPREADSHEETS};
     ViewGroup viewGroup;
     ProgressBar mProgress;
+    //guardaremos la altura previa del edittext de los comentarios
     private int previousETHeight = 0;
 
     /**

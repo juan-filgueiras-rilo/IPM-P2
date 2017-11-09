@@ -16,7 +16,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -66,9 +65,6 @@ public class BeerListActivity extends AppCompatActivity
     static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
     private BeerModel model;
 
-
-    private int beerIndex;
-    private String newComment;
     GoogleAccountCredential mCredential;
 
 
@@ -143,11 +139,6 @@ public class BeerListActivity extends AppCompatActivity
 
     }
 
-
-    public void setBeers(List<Beer> birras) {
-        this.beers = birras;
-    }
-
     /**
      * Attempt to call the API, after verifying that all the preconditions are
      * satisfied. The preconditions are: Google Play Services installed, an
@@ -159,7 +150,7 @@ public class BeerListActivity extends AppCompatActivity
         if (!isGooglePlayServicesAvailable()) {
             acquireGooglePlayServices();
         } else if (mCredential.getSelectedAccountName() == null) {
-            chooseAccount(1);
+            chooseAccount();
         } else if (!isDeviceOnline()) {
             //mOutputText.setText("No network connection available.");
             //mOutputText.setText(getString(R.string.no_connection_available));
@@ -189,7 +180,7 @@ public class BeerListActivity extends AppCompatActivity
      * is granted.
      */
     @AfterPermissionGranted(REQUEST_PERMISSION_GET_ACCOUNTS)
-    private void chooseAccount(int opType) {
+    private void chooseAccount() {
         if (EasyPermissions.hasPermissions(
                 getApplicationContext(), android.Manifest.permission.GET_ACCOUNTS)) {
             String accountName = getPreferences(Context.MODE_PRIVATE)
@@ -201,11 +192,7 @@ public class BeerListActivity extends AppCompatActivity
                 editor.putString("googleAccount", accountName);
                 editor.commit();
                 mCredential.setSelectedAccountName(accountName);
-                //dependiendo de la operacion que la llame, hago una cosa u otra
-                if (opType == 1)
-                    getResultsFromApi();
-                else if (opType == 2)
-                    makePostOnApi(newComment, beerIndex);
+                getResultsFromApi();
             } else {
                 // Start a dialog from which the user can choose an account
                 startActivityForResult(
@@ -426,7 +413,7 @@ public class BeerListActivity extends AppCompatActivity
                 Snackbar.make(findViewById(android.R.id.content), getString(R.string.data_retrieved, mCredential.getSelectedAccountName()),
                         Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
-            setBeers(output);
+            beers = output;
             setupRecyclerView((RecyclerView) recyclerView);
         }
 
@@ -458,101 +445,7 @@ public class BeerListActivity extends AppCompatActivity
 
 
 
-    public void makePostOnApi(String userComment, int index) {
-        newComment = userComment;
-        beerIndex = index;
-        if (!isGooglePlayServicesAvailable()) {
-            acquireGooglePlayServices();
-        } else if (mCredential.getSelectedAccountName() == null) {
-            chooseAccount(2);
-        } else if (!isDeviceOnline()) {
-            Snackbar.make(findViewById(android.R.id.content), getString(R.string.no_connection_available), Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
 
-            return;
-        } else {
-            new BeerListActivity.MakePutRequest(mCredential).execute();
-
-        }
-    }
-
-    /**
-     * An asynchronous task that handles the Google Sheets API call.
-     * Placing the API calls in their own task ensures the UI stays responsive.
-     */
-    public class MakePutRequest extends AsyncTask<Void, Void, Integer> {
-        private com.google.api.services.sheets.v4.Sheets mService = null;
-        private Exception mLastError = null;
-
-
-        MakePutRequest(GoogleAccountCredential credential) {
-            HttpTransport transport = AndroidHttp.newCompatibleTransport();
-            JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-            mService = new com.google.api.services.sheets.v4.Sheets.Builder(
-                    transport, jsonFactory, credential)
-                    .setApplicationName(getString(R.string.app_name))
-                    .build();
-            //establecemos el mService
-            model.setMService(mService);
-        }
-
-        /**
-         * Background task to call Google Sheets API.
-         *
-         * @param params no parameters needed for this task.
-         */
-        @Override
-        protected Integer doInBackground(Void... params) {
-            try {
-                model.setContext(getApplicationContext());
-                Beer beer = model.getBeers().get(beerIndex);
-                return model.updateDataOnApi(beer, newComment, mCredential.getSelectedAccountName());
-            } catch (Exception e) {
-                mLastError = e;
-                cancel(true);
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPreExecute() {
-        }
-
-        @Override
-        protected void onPostExecute(Integer entero) {
-            if (entero == 0 || entero == null) {
-                Snackbar.make(findViewById(android.R.id.content), getString(R.string.no_api_results), Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            } else {
-                Snackbar.make(findViewById(android.R.id.content), getString(R.string.comment_ok), Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-            //actualizamos el texto en la pantalla
-            TextView commentTextView = (TextView) findViewById(R.id.content_comment);
-            commentTextView.setText(model.getBeers().get(beerIndex).getComment());
-        }
-
-        @Override
-        protected void onCancelled() {
-            if (mLastError != null) {
-                if (mLastError instanceof GooglePlayServicesAvailabilityIOException) {
-                    showGooglePlayServicesAvailabilityErrorDialog(
-                            ((GooglePlayServicesAvailabilityIOException) mLastError)
-                                    .getConnectionStatusCode());
-                } else if (mLastError instanceof UserRecoverableAuthIOException) {
-                    startActivityForResult(
-                            ((UserRecoverableAuthIOException) mLastError).getIntent(),
-                            BeerListActivity.REQUEST_AUTHORIZATION);
-                } else {
-                    Snackbar.make(findViewById(android.R.id.content), mLastError.getMessage(), Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                }
-            } else {
-                Snackbar.make(findViewById(android.R.id.content), R.string.request_cancelled, Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        }
-    }
 
 
 }

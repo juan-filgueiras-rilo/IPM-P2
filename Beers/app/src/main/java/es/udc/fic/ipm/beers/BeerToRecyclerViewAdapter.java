@@ -7,11 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
-import java.net.SocketTimeoutException;
 import java.util.List;
 
 /**

@@ -30,36 +30,8 @@ public class Beer {
         this.photoURL = photoURL;
     }
 
-    public void setRowNum(int rowNum) {
-        this.rowNum = rowNum;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public void setMadeIn(String madeIn) {
-        this.madeIn = madeIn;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
     public void setComment(String comment) {
         this.comment = comment;
-    }
-
-    public void setMoreInfo(String moreInfo) {
-        this.moreInfo = moreInfo;
-    }
-
-    public void setPhotoURL (String photoURL) {
-        this.photoURL = photoURL;
     }
 
     public int getRowNum() {

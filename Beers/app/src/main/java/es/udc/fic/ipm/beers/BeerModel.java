@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 public class BeerModel {
 
     private static BeerModel myModel = null;
-    private static List<Beer> beers;
+    private List<Beer> beers;
     private com.google.api.services.sheets.v4.Sheets myMService;
     private Context myContext;
 
