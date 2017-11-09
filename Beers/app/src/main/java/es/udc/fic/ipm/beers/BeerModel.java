@@ -1,13 +1,16 @@
 package es.udc.fic.ipm.beers;
 
+import android.content.Context;
 import android.text.TextUtils;
 
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,19 +20,45 @@ import java.util.regex.Pattern;
  */
 
 public class BeerModel {
+
+    private static BeerModel myModel = null;
     private static List<Beer> beers;
+    private com.google.api.services.sheets.v4.Sheets myMService;
+    private Context myContext;
+
+    //patron singleton
+    public static BeerModel getBeerModel(com.google.api.services.sheets.v4.Sheets mService, Context context) {
+        if (myModel == null) {
+            myModel = new BeerModel(mService, context);
+        }
+        return myModel;
+    }
+
+    private BeerModel(com.google.api.services.sheets.v4.Sheets mService, Context context) {
+        this.myMService = mService;
+        this.myContext = context;
+    }
+
+    public void setMService (com.google.api.services.sheets.v4.Sheets mService) {
+        this.myMService = mService;
+    }
+
+    public void setContext (Context context) {
+        this.myContext = context;
+    }
+
     /**
      * Fetch a list of names and majors of students in a sample spreadsheet:
      * https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
      * @return List of names and majors
      * @throws IOException
      */
-    public static List<Beer> getDataFromApi(com.google.api.services.sheets.v4.Sheets mService) throws IOException {
+    public List<Beer> getDataFromApi() throws IOException {
         //String spreadsheetId = "119D2l8Tc8GviGR4u9SxWmj4Fj8lB0d63Nm_QyNEXHsE";
         String spreadsheetId = "1vPGNG_ek5T5I-1KQVPAhwMv6YOJEY1Dg5ZIhCPHA23I";
         String range = "Sheet1!A2:G";
         List<String> results = new ArrayList<String>();
-        ValueRange response = mService.spreadsheets().values()
+        ValueRange response = this.myMService.spreadsheets().values()
                 .get(spreadsheetId, range)
                 .setValueRenderOption("FORMULA").execute();
 
@@ -50,7 +79,7 @@ public class BeerModel {
                 switch (tam) {
                     case 1: {
                         results.add((String)row.get(0));
-                        
+
                         //si la celda no está vacía, actualizo el campo
                         if (!TextUtils.isEmpty((String)row.get(0)))
                             name = (String)row.get(0);
@@ -153,6 +182,10 @@ public class BeerModel {
                     default:
                         break;
                 }
+                //parseamos la fecha
+                if (date != null) {
+                    date = parseDate(date);
+                }
                 //creamos la cerveza y la metemos en la lista de cervezas
                 Beer beer = new Beer(rowNum, name, date, madeIn, type,
                         comment, moreInfo, photoURL);
@@ -169,14 +202,13 @@ public class BeerModel {
     /**
      * Se hace un put al recurso que contiene la hoja de cálculo y se devuelve el número
      * de celdas modificadas para comprobar que se ha realizado la operación con éxito
-     * @param mService servicio de google
      * @param beer cerveza que quiero modificar
      * @param userComment comentario introducido por el usuario
      * @param accountName nombre de la cuenta del usuario
      * @return entero que me devuelve el número de celdas modificadas
      * @throws IOException
      */
-    public static Integer updateDataOnApi(com.google.api.services.sheets.v4.Sheets mService, Beer beer, String userComment, String accountName) throws IOException {
+    public Integer updateDataOnApi(Beer beer, String userComment, String accountName) throws IOException {
         String spreadsheetId = "1vPGNG_ek5T5I-1KQVPAhwMv6YOJEY1Dg5ZIhCPHA23I";
         //celda que editaremos
         String range = "E" + beer.getRowNum();
@@ -194,7 +226,7 @@ public class BeerModel {
         values.add((comments));
         ValueRange body = new ValueRange()
                 .setValues(values);
-        UpdateValuesResponse result = mService.spreadsheets().values()
+        UpdateValuesResponse result = this.myMService.spreadsheets().values()
                 .update(spreadsheetId, range, body).setValueInputOption("RAW").execute();
         //actualizamos la cerveza
         beer.setComment(actualComments);
@@ -206,7 +238,7 @@ public class BeerModel {
 
 
     //just for debug
-    private static void printList(List<Beer> birras) {
+    private void printList(List<Beer> birras) {
         for (Beer beer : birras) {
             System.out.println("rowNum: " + beer.getRowNum()
                     + "\t nombre: " + beer.getName()
@@ -219,11 +251,11 @@ public class BeerModel {
         }
     }
 
-    public static List<Beer> getBeers (){
+    public List<Beer> getBeers (){
         return beers;
     }
 
-    public static int findByName(String name) {
+    public int findByName(String name) {
         if (!TextUtils.isEmpty(name)) {
             for (int i = 0; i < beers.size(); i++) {
                 //System.out.println("nombre_stock: " + beers.get(i).getName() + " nombre parametro: " + name);
@@ -234,7 +266,21 @@ public class BeerModel {
             }
         }
         return (-1);
+    }
 
-
+    private String parseDate (String originalDate) {
+        System.out.println("antes: " + originalDate);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        Date date = null;
+        try {
+            //si es una fecha, la parseamos
+            date = sdf.parse(originalDate);
+        } catch (ParseException e) {
+            //sino, devolvemos directamente el string
+            return originalDate;
+        }
+        java.text.DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(this.myContext);
+        System.out.println("después: " + dateFormat.format(date));
+        return dateFormat.format(date);
     }
 }
