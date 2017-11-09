@@ -171,6 +171,8 @@ public class BeerListActivity extends AppCompatActivity
         } else if (!isDeviceOnline()) {
             //mOutputText.setText("No network connection available.");
             //mOutputText.setText(getString(R.string.no_connection_available));
+            //si no hay red, paramos la progressbar del swiperefreshlayout
+            mSwipeRefreshLayout.setRefreshing(false);
             Snackbar.make(findViewById(android.R.id.content), getString(R.string.no_connection_available), Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
 

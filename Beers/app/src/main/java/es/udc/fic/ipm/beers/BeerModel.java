@@ -61,7 +61,6 @@ public class BeerModel {
         ValueRange response = this.myMService.spreadsheets().values()
                 .get(spreadsheetId, range)
                 .setValueRenderOption("FORMULA").execute();
-
         List<List<Object>> values = response.getValues();
         List<Beer> tempbeers = new ArrayList<>();
         if (values != null) {
@@ -269,7 +268,6 @@ public class BeerModel {
     }
 
     private String parseDate (String originalDate) {
-        System.out.println("antes: " + originalDate);
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         Date date = null;
         try {
@@ -280,7 +278,6 @@ public class BeerModel {
             return originalDate;
         }
         java.text.DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(this.myContext);
-        System.out.println("después: " + dateFormat.format(date));
         return dateFormat.format(date);
     }
 }
