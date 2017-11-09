@@ -1,25 +1,16 @@
 package es.udc.fic.ipm.beers;
 
-import android.accounts.AccountManager;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -28,11 +19,8 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.google.api.client.googleapis.extensions.android.gms.auth.GooglePlayServicesAvailabilityIOException;
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -41,10 +29,6 @@ import com.google.api.client.util.ExponentialBackOff;
 import com.google.api.services.sheets.v4.SheetsScopes;
 
 import java.util.Arrays;
-import java.util.List;
-
-import pub.devrel.easypermissions.AfterPermissionGranted;
-import pub.devrel.easypermissions.EasyPermissions;
 
 
 /**
@@ -72,6 +56,7 @@ public class BeerDetailActivity extends AppCompatActivity {
     private EditText editText;
     private int beerIndex;
     private ProgressBar mProgress;
+    private BeerModel model;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +69,7 @@ public class BeerDetailActivity extends AppCompatActivity {
         SharedPreferences sharedPref = getSharedPreferences("SharedPref", Context.MODE_PRIVATE);
         String pruebaCuenta = sharedPref.getString("googleAccount", "");
         mCredential.setSelectedAccountName(pruebaCuenta);
+        model = BeerModel.getBeerModel(null, getApplicationContext());
 
 
         //si tengo los detalles de una cerveza abiertos y giro la pantalla, vuelvo a la
@@ -145,7 +131,8 @@ public class BeerDetailActivity extends AppCompatActivity {
                         //para saber en que cerveza estamos, podemos hacer un atributo en el modelo (int) que nos diga cual
                         //ha sido la ultima cerveza seleccionada, cogiendo el titulo del toolbar me parece mas elegante
                         CollapsingToolbarLayout ctl = (CollapsingToolbarLayout)findViewById(R.id.toolbar_layout);
-                        beerIndex = BeerModel.findByName(ctl.getTitle().toString());
+                        //beerIndex = BeerModel.findByName(ctl.getTitle().toString());
+                        beerIndex = model.findByName(ctl.getTitle().toString());
                         //llamamos al post
                         makePostOnApi();
                     }
@@ -203,6 +190,7 @@ public class BeerDetailActivity extends AppCompatActivity {
                     transport, jsonFactory, credential)
                     .setApplicationName(getString(R.string.app_name))
                     .build();
+            model.setMService(mService);
         }
 
         /**
@@ -213,8 +201,13 @@ public class BeerDetailActivity extends AppCompatActivity {
         @Override
         protected Integer doInBackground(Void... params) {
             try {
-                Beer beer = BeerModel.getBeers().get(beerIndex);
-                return BeerModel.updateDataOnApi(mService, beer, newComment, mCredential.getSelectedAccountName());
+                /*Beer beer = BeerModel.getBeers().get(beerIndex);
+                return BeerModel.updateDataOnApi(mService, beer, newComment, mCredential.getSelectedAccountName());*/
+
+
+                Beer beer = model.getBeers().get(beerIndex);
+                model.setMService(mService);
+                return model.updateDataOnApi(beer, newComment, mCredential.getSelectedAccountName());
             } catch (Exception e) {
                 mLastError = e;
                 cancel(true);
@@ -243,7 +236,8 @@ public class BeerDetailActivity extends AppCompatActivity {
             }
             //actualizamos el texto en la pantalla
             TextView commentTextView = (TextView) findViewById(R.id.content_comment);
-            commentTextView.setText(BeerModel.getBeers().get(beerIndex).getComment());
+            commentTextView.setText(model.getBeers().get(beerIndex).getComment());
+            //commentTextView.setText(BeerModel.getBeers().get(beerIndex).getComment());
         }
 
         @Override

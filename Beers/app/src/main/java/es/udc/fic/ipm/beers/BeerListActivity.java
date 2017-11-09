@@ -10,14 +10,12 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -66,6 +64,7 @@ public class BeerListActivity extends AppCompatActivity
     static final int REQUEST_AUTHORIZATION = 1001;
     static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
     static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
+    private BeerModel model;
 
 
     private int beerIndex;
@@ -91,6 +90,7 @@ public class BeerListActivity extends AppCompatActivity
         setContentView(R.layout.activity_beer_list);
         //mOutputText = (TextView) findViewById(R.id.output_text);
         recyclerView = findViewById(R.id.beer_list);
+
 
 
         mCredential = GoogleAccountCredential.usingOAuth2(
@@ -123,7 +123,10 @@ public class BeerListActivity extends AppCompatActivity
             // activity should be in two-pane mode.
             mTwoPane = true;
         }
-        beers = BeerModel.getBeers();
+        //inicializamos nuestra instancia del modelo con el servicio a null pq aun no tenemos
+        //el servicio inicializado, cuando lo inicialicemos se lo comunicamos al modelo
+        model = BeerModel.getBeerModel(null, getApplicationContext());
+        beers = model.getBeers();
         //sólo recargo los datos de las cervezas si aún no hay datos, después
         //solo recargo actualizando la vista con el swiperefresh
         if (beers == null || beers.size() == 0) {
@@ -393,6 +396,8 @@ public class BeerListActivity extends AppCompatActivity
                     transport, jsonFactory, credential)
                     .setApplicationName(getString(R.string.app_name))
                     .build();
+            //establecemos el mService
+            model.setMService(mService);
         }
 
         /**
@@ -403,7 +408,9 @@ public class BeerListActivity extends AppCompatActivity
         @Override
         protected List<Beer> doInBackground(Void... params) {
             try {
-                return BeerModel.getDataFromApi(mService);
+                model.setContext(getApplicationContext());
+                return model.getDataFromApi();
+                //return BeerModel.getDataFromApi(mService);
             } catch (Exception e) {
                 mLastError = e;
                 cancel(true);
@@ -495,6 +502,8 @@ public class BeerListActivity extends AppCompatActivity
                     transport, jsonFactory, credential)
                     .setApplicationName(getString(R.string.app_name))
                     .build();
+            //establecemos el mService
+            model.setMService(mService);
         }
 
         /**
@@ -505,8 +514,12 @@ public class BeerListActivity extends AppCompatActivity
         @Override
         protected Integer doInBackground(Void... params) {
             try {
-                Beer beer = BeerModel.getBeers().get(beerIndex);
-                return BeerModel.updateDataOnApi(mService, beer, newComment, mCredential.getSelectedAccountName());
+                /*Beer beer = BeerModel.getBeers().get(beerIndex);
+                return BeerModel.updateDataOnApi(mService, beer, newComment, mCredential.getSelectedAccountName());*/
+
+                model.setContext(getApplicationContext());
+                Beer beer = model.getBeers().get(beerIndex);
+                return model.updateDataOnApi(beer, newComment, mCredential.getSelectedAccountName());
             } catch (Exception e) {
                 mLastError = e;
                 cancel(true);
@@ -535,7 +548,8 @@ public class BeerListActivity extends AppCompatActivity
             }
             //actualizamos el texto en la pantalla
             TextView commentTextView = (TextView) findViewById(R.id.content_comment);
-            commentTextView.setText(BeerModel.getBeers().get(beerIndex).getComment());
+            commentTextView.setText(model.getBeers().get(beerIndex).getComment());
+            //commentTextView.setText(BeerModel.getBeers().get(beerIndex).getComment());
         }
 
         @Override

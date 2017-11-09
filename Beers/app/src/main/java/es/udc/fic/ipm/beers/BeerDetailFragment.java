@@ -42,6 +42,7 @@ public class BeerDetailFragment extends Fragment {
     private String newComment;
     private int beerIndex;
     private View rootView;
+    private BeerModel model;
     FloatingActionButton fab;
 
     /**
@@ -56,8 +57,12 @@ public class BeerDetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments().containsKey(ARG_ITEM_ID)) {
-            int index = BeerModel.findByName(getArguments().getString(ARG_ITEM_ID));
-            beer = BeerModel.getBeers().get(index);
+            //int index = BeerModel.findByName(getArguments().getString(ARG_ITEM_ID));
+            //beer = BeerModel.getBeers().get(index);
+
+            model = BeerModel.getBeerModel(null, getContext());
+            int index = model.findByName(getArguments().getString(ARG_ITEM_ID));
+            beer = model.getBeers().get(index);
             // Load the dummy content specified by the fragment
             // arguments. In a real-world scenario, use a Loader
             // to load content from a content provider.
@@ -120,7 +125,8 @@ public class BeerDetailFragment extends Fragment {
                             newComment = textInput;
                             //para saber en que cerveza estamos, podemos hacer un atributo en el modelo (int) que nos diga cual
                             //ha sido la ultima cerveza seleccionada, cogiendo el titulo del toolbar me parece mas elegante
-                            beerIndex = BeerModel.findByName(beer.getName());
+                            //beerIndex = BeerModel.findByName(beer.getName());
+                            beerIndex = model.findByName(beer.getName());
                             BeerListActivity beerListActivity = (BeerListActivity)getActivity();
                             beerListActivity.makePostOnApi(newComment, beerIndex);
                             //llamamos al post
@@ -137,9 +143,9 @@ public class BeerDetailFragment extends Fragment {
         });
 
 
-        // Show the dummy content as text in a TextView.
+        // Mostramos los datos de la cerveza
         if (beer != null) {
-            int cantidad = BeerModel.getBeers().size();
+            //int cantidad = BeerModel.getBeers().size();
             String date, madeIn, type, comment, moreInfo, photoURL;
             //comprobamos que los datos son validos antes de insertarlos
             date = beer.getDate();
