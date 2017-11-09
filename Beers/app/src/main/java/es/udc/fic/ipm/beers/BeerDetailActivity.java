@@ -62,13 +62,6 @@ public class BeerDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mCredential = GoogleAccountCredential.usingOAuth2(
-                getApplicationContext(), Arrays.asList(SCOPES))
-                .setBackOff(new ExponentialBackOff());
-        //cojo el nombre de la cuenta de las sharedPreferences
-        SharedPreferences sharedPref = getSharedPreferences("SharedPref", Context.MODE_PRIVATE);
-        String pruebaCuenta = sharedPref.getString("googleAccount", "");
-        mCredential.setSelectedAccountName(pruebaCuenta);
         model = BeerModel.getBeerModel(null, getApplicationContext());
 
 
@@ -108,40 +101,6 @@ public class BeerDetailActivity extends AppCompatActivity {
                     .add(R.id.beer_detail_container, fragment)
                     .commit();
         }
-        editText = (EditText) findViewById(R.id.comment_edit_text);
-        mProgress = (ProgressBar) findViewById(R.id.comment_progress_bar);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_message);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                /*Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();*/
-                //si estaba sin mostrar, lo mostramos
-                if (editText.getVisibility() == View.INVISIBLE) {
-                    //ponemos el foco sobre el campo de texto
-                    editText.requestFocus();
-                    editText.setVisibility(View.VISIBLE);
-                } else {
-                    //sino, cogemos el texto que se haya escrito, y lo volvemos invisible
-                    //cogemos lo que ha introducido el usuario
-                    String textInput = editText.getText().toString();
-                    //miramos que haya introducido algo
-                    if (!TextUtils.isEmpty(textInput)) {
-                        newComment = textInput;
-                        //para saber en que cerveza estamos, podemos hacer un atributo en el modelo (int) que nos diga cual
-                        //ha sido la ultima cerveza seleccionada, cogiendo el titulo del toolbar me parece mas elegante
-                        CollapsingToolbarLayout ctl = (CollapsingToolbarLayout)findViewById(R.id.toolbar_layout);
-                        //beerIndex = BeerModel.findByName(ctl.getTitle().toString());
-                        beerIndex = model.findByName(ctl.getTitle().toString());
-                        //llamamos al post
-                        makePostOnApi();
-                    }
-                    editText.setText("");
-                    editText.setVisibility(View.INVISIBLE);
-                }
-                //cuando clicamos en el boton, actualizamos el comentario
-            }
-        });
     }
 
     @Override
@@ -159,105 +118,6 @@ public class BeerDetailActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-
-
-
-
-
-    public void makePostOnApi() {
-        new BeerDetailActivity.MakePutRequest(mCredential).execute();
-    }
-
-    public void makePostOnApi(String userComment, int index) {
-        new BeerDetailActivity.MakePutRequest(mCredential).execute();
-    }
-
-    /**
-     * An asynchronous task that handles the Google Sheets API call.
-     * Placing the API calls in their own task ensures the UI stays responsive.
-     */
-    public class MakePutRequest extends AsyncTask<Void, Void, Integer> {
-        private com.google.api.services.sheets.v4.Sheets mService = null;
-        private Exception mLastError = null;
-
-
-        MakePutRequest(GoogleAccountCredential credential) {
-            HttpTransport transport = AndroidHttp.newCompatibleTransport();
-            JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-            mService = new com.google.api.services.sheets.v4.Sheets.Builder(
-                    transport, jsonFactory, credential)
-                    .setApplicationName(getString(R.string.app_name))
-                    .build();
-            model.setMService(mService);
-        }
-
-        /**
-         * Background task to call Google Sheets API.
-         *
-         * @param params no parameters needed for this task.
-         */
-        @Override
-        protected Integer doInBackground(Void... params) {
-            try {
-                /*Beer beer = BeerModel.getBeers().get(beerIndex);
-                return BeerModel.updateDataOnApi(mService, beer, newComment, mCredential.getSelectedAccountName());*/
-
-
-                Beer beer = model.getBeers().get(beerIndex);
-                model.setMService(mService);
-                return model.updateDataOnApi(beer, newComment, mCredential.getSelectedAccountName());
-            } catch (Exception e) {
-                mLastError = e;
-                cancel(true);
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPreExecute() {
-            //mOutputText.setText("");
-            mProgress.setVisibility(View.VISIBLE);
-            mProgress.animate();
-            //fab.setVisibility(View.INVISIBLE);
-
-        }
-
-        @Override
-        protected void onPostExecute(Integer entero) {
-            mProgress.setVisibility(View.INVISIBLE);
-            if (entero == 0 || entero == null) {
-                Snackbar.make(findViewById(android.R.id.content), getString(R.string.no_api_results), Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            } else {
-                Snackbar.make(findViewById(android.R.id.content), getString(R.string.comment_ok), Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-            //actualizamos el texto en la pantalla
-            TextView commentTextView = (TextView) findViewById(R.id.content_comment);
-            commentTextView.setText(model.getBeers().get(beerIndex).getComment());
-            //commentTextView.setText(BeerModel.getBeers().get(beerIndex).getComment());
-        }
-
-        @Override
-        protected void onCancelled() {
-            mProgress.setVisibility(View.INVISIBLE);
-            //fab.setVisibility(View.VISIBLE);
-            if (mLastError != null) {
-                if (mLastError instanceof UserRecoverableAuthIOException) {
-                    startActivityForResult(
-                            ((UserRecoverableAuthIOException) mLastError).getIntent(),
-                            BeerListActivity.REQUEST_AUTHORIZATION);
-                } else {
-                    Snackbar.make(findViewById(android.R.id.content), mLastError.getMessage(), Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                }
-            } else {
-                Snackbar.make(findViewById(android.R.id.content), R.string.request_cancelled, Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        }
     }
 
 
