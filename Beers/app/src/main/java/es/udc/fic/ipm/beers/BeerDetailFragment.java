@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -95,6 +96,7 @@ public class BeerDetailFragment extends Fragment {
 
         //esta parte del código sólo se ejecuta cuadno estoy en la actividad BeerListActivity
         //cuando estoy en BeerDetailActivity, se meten los datos desde ahí
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -102,6 +104,8 @@ public class BeerDetailFragment extends Fragment {
                 if (!getActivity().getLocalClassName().equals("BeerDetailActivity")) {
                     //si estaba sin mostrar, lo mostramos
                     if (editText.getVisibility() == View.INVISIBLE) {
+                        //adaptamos el tamaño al contenido y lo mostramos
+                        editText.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
                         editText.setVisibility(View.VISIBLE);
                         //ponemos el foco sobre el campo de texto para poder escribir directamente
                         editText.requestFocus();
@@ -121,6 +125,7 @@ public class BeerDetailFragment extends Fragment {
                         }
                         editText.setText("");
                         editText.setVisibility(View.INVISIBLE);
+                        editText.getLayoutParams().height = 30;
                     }
                 }
                 //cuando clicamos en el boton, actualizamos el comentario
@@ -130,7 +135,7 @@ public class BeerDetailFragment extends Fragment {
 
         // Mostramos los datos de la cerveza
         if (beer != null) {
-            String date, madeIn, type, comment, moreInfo, photoURL;
+            String name, date, madeIn, type, comment, moreInfo, photoURL;
             //comprobamos que los datos son validos antes de insertarlos
             date = beer.getDate();
             if (date == null)
@@ -164,13 +169,17 @@ public class BeerDetailFragment extends Fragment {
                 imageLoader.init(ImageLoaderConfiguration.createDefault(getContext()));
             Activity activity = this.getActivity();
             ImageView toolbarImage = (ImageView) activity.findViewById(R.id.toolbar_imageview);
-            TextView textView = (TextView) rootView.findViewById(R.id.title_photo_viewer);
             //si estoy en pantalla única, muestro la imagen en el toolbar, sino, la muestro
-            //en un campo más
+            //en un campo más, y lo mismo con los campos del nombre, si estoy en modo unica
+            //pantalla los oculto, sino, los muestro
+            TextView textViewNameTitle = (TextView) rootView.findViewById(R.id.title_name);
+            TextView textViewNameContent = (TextView) rootView.findViewById(R.id.content_name);
             if (toolbarImage != null) {
                 imageLoader.displayImage(beer.getPhotoURL(), toolbarImage);
-                textView.setText("");
+                textViewNameTitle.getLayoutParams().height = 0;
+                textViewNameContent.getLayoutParams().height = 0;
             } else {
+                textViewNameContent.setText(beer.getName());
                 imageLoader.displayImage(beer.getPhotoURL(), imageview);
             }
         }

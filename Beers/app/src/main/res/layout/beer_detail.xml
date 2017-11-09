@@ -3,41 +3,20 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="wrap_content">
 
 
-    <android.support.design.widget.FloatingActionButton xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/fab_message_detail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:foregroundGravity="top"
-        app:srcCompat="@android:drawable/stat_notify_chat"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"/>
 
-    <EditText
-        android:id="@+id/comment_edit_text_detail"
-        android:layout_width="320dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="10dp"
-        android:background="@drawable/edit_text_style"
-        android:hint="@string/write_your_comment"
-        android:padding="20dp"
-        android:visibility="invisible" />
+
+
 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/ScrollView01"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:fillViewport="true"
         android:scrollbars="vertical"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:layout_below="@id/comment_edit_text_detail">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
 
@@ -55,9 +34,24 @@
             tools:context="es.udc.fic.ipm.beers.BeerDetailFragment">
 
 
+            <ImageView
+                android:id="@+id/beer_photo_viewer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
-
-
+            <TextView
+                android:id="@+id/title_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30dp"
+                android:textStyle="bold"
+                android:text="@string/beer_name"
+                android:layout_below="@id/beer_photo_viewer"/>
+            <TextView
+                android:id="@+id/content_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/title_name" />
 
             <TextView
                 android:id="@+id/title_date"
@@ -65,7 +59,8 @@
                 android:layout_height="wrap_content"
                 android:textSize="30dp"
                 android:textStyle="bold"
-                android:text="@string/beer_date" />
+                android:text="@string/beer_date"
+                android:layout_below="@id/content_name"/>
             <TextView
                 android:id="@+id/content_date"
                 android:layout_width="wrap_content"
@@ -100,19 +95,6 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/title_type" />
 
-            <TextView
-                android:id="@+id/title_comment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="30dp"
-                android:textStyle="bold"
-                android:text="@string/beer_comment"
-                android:layout_below="@id/content_type" />
-            <TextView
-                android:id="@+id/content_comment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/title_comment" />
 
             <TextView
                 android:id="@+id/title_more_info"
@@ -121,25 +103,52 @@
                 android:textSize="30dp"
                 android:textStyle="bold"
                 android:text="@string/beer_more_info"
-                android:layout_below="@id/content_comment" />
+                android:layout_below="@id/content_type" />
             <TextView
                 android:id="@+id/content_more_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/title_more_info" />
+
             <TextView
-                android:id="@+id/title_photo_viewer"
+                android:id="@+id/title_comment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="30dp"
                 android:textStyle="bold"
-                android:text="@string/beer_photo"
+                android:text="@string/beer_comment"
                 android:layout_below="@id/content_more_info" />
-            <ImageView
-                android:id="@+id/beer_photo_viewer"
+            <TextView
+                android:id="@+id/content_comment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/title_photo_viewer"/>
+                android:layout_below="@id/comment_edit_text_detail" />
+
+            <EditText
+                android:id="@+id/comment_edit_text_detail"
+                android:layout_width="300dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/edit_text_style"
+                android:hint="@string/write_your_comment"
+                android:padding="5dp"
+                android:visibility="invisible"
+                android:layout_below="@id/title_comment"/>
+
+            <android.support.design.widget.FloatingActionButton xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/fab_message_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:foregroundGravity="top"
+                app:srcCompat="@android:drawable/stat_notify_chat"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_below="@id/title_comment"/>
+
 
 
 

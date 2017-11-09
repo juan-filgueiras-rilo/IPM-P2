@@ -49,24 +49,12 @@
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/beer_detail_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" >
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
     </android.support.v4.widget.NestedScrollView>
 
-    <!--
-    <EditText
-        android:id="@+id/comment_edit_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/write_your_comment"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:visibility="invisible"
-        android:padding="10dp"
-        android:background="#ffffff"
-        />
-        -->
 
     <EditText
         android:id="@+id/comment_edit_text"
