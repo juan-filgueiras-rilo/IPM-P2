@@ -33,10 +33,6 @@ public class BeerDetailFragment extends Fragment {
      */
     public static final String ARG_ITEM_ID = "item_id";
 
-    /**
-     * The dummy content this fragment is presenting.
-     */
-    //private DummyContent.DummyItem mItem;
     private Beer beer;
     private EditText editText;
     private String newComment;
@@ -57,19 +53,14 @@ public class BeerDetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments().containsKey(ARG_ITEM_ID)) {
-            //int index = BeerModel.findByName(getArguments().getString(ARG_ITEM_ID));
-            //beer = BeerModel.getBeers().get(index);
 
             model = BeerModel.getBeerModel(null, getContext());
             int index = model.findByName(getArguments().getString(ARG_ITEM_ID));
             beer = model.getBeers().get(index);
-            // Load the dummy content specified by the fragment
-            // arguments. In a real-world scenario, use a Loader
-            // to load content from a content provider.
-            //mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
 
             Activity activity = this.getActivity();
-            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
+            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.
+                    findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
                 //appBarLayout.setTitle(mItem.content);
                 appBarLayout.setTitle(beer.getName());
@@ -112,10 +103,8 @@ public class BeerDetailFragment extends Fragment {
                     //si estaba sin mostrar, lo mostramos
                     if (editText.getVisibility() == View.INVISIBLE) {
                         editText.setVisibility(View.VISIBLE);
-                        //ponemos el foco sobre el campo de texto
+                        //ponemos el foco sobre el campo de texto para poder escribir directamente
                         editText.requestFocus();
-                        //editText.setHeight(200);
-                        //editText.getLayoutParams().height=200;
                     } else {
                         //sino, cogemos el texto que se haya escrito, y lo volvemos invisible
                         //cogemos lo que ha introducido el usuario
@@ -123,18 +112,14 @@ public class BeerDetailFragment extends Fragment {
                         //miramos que haya introducido algo
                         if (!TextUtils.isEmpty(textInput)) {
                             newComment = textInput;
-                            //para saber en que cerveza estamos, podemos hacer un atributo en el modelo (int) que nos diga cual
-                            //ha sido la ultima cerveza seleccionada, cogiendo el titulo del toolbar me parece mas elegante
-                            //beerIndex = BeerModel.findByName(beer.getName());
+                            /*para saber en que cerveza estamos, podemos hacer un atributo en el
+                            modelo (int) que nos diga cual ha sido la ultima cerveza seleccionada,
+                            cogiendo el titulo del toolbar me parece mas elegante*/
                             beerIndex = model.findByName(beer.getName());
                             BeerListActivity beerListActivity = (BeerListActivity)getActivity();
                             beerListActivity.makePostOnApi(newComment, beerIndex);
-                            //llamamos al post
-                            //makePostOnApi();
                         }
                         editText.setText("");
-                        //editText.setHeight(0);
-                        //editText.getLayoutParams().height=0;
                         editText.setVisibility(View.INVISIBLE);
                     }
                 }
@@ -145,7 +130,6 @@ public class BeerDetailFragment extends Fragment {
 
         // Mostramos los datos de la cerveza
         if (beer != null) {
-            //int cantidad = BeerModel.getBeers().size();
             String date, madeIn, type, comment, moreInfo, photoURL;
             //comprobamos que los datos son validos antes de insertarlos
             date = beer.getDate();
@@ -171,12 +155,24 @@ public class BeerDetailFragment extends Fragment {
             ((TextView) rootView.findViewById(R.id.content_type)).setText(type);
             ((TextView) rootView.findViewById(R.id.content_comment)).setText(comment);
             ((TextView) rootView.findViewById(R.id.content_more_info)).setText(moreInfo);
+
+
             ImageView imageview = (ImageView) rootView.findViewById(R.id.beer_photo_viewer);
             ImageLoader imageLoader = ImageLoader.getInstance();
             //si el imageloader ya está iniciado, no hacemos nada
             if (!imageLoader.isInited())
                 imageLoader.init(ImageLoaderConfiguration.createDefault(getContext()));
-            imageLoader.displayImage(beer.getPhotoURL(), imageview);
+            Activity activity = this.getActivity();
+            ImageView toolbarImage = (ImageView) activity.findViewById(R.id.toolbar_imageview);
+            TextView textView = (TextView) rootView.findViewById(R.id.title_photo_viewer);
+            //si estoy en pantalla única, muestro la imagen en el toolbar, sino, la muestro
+            //en un campo más
+            if (toolbarImage != null) {
+                imageLoader.displayImage(beer.getPhotoURL(), toolbarImage);
+                textView.setText("");
+            } else {
+                imageLoader.displayImage(beer.getPhotoURL(), imageview);
+            }
         }
 
         return rootView;
