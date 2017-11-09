@@ -108,13 +108,8 @@ public class BeerDetailFragment extends Fragment {
         editText = (EditText) rootView.findViewById(R.id.comment_edit_text_detail);
         viewGroup = container;
         mProgress = (ProgressBar) rootView.findViewById(R.id.comment_progress_bar);
-
-
         fab = (FloatingActionButton) rootView.findViewById(R.id.fab_message_detail);
-
         fab.setVisibility(View.VISIBLE);
-
-
 
         //esta parte del código sólo se ejecuta cuadno estoy en la actividad BeerListActivity
         //cuando estoy en BeerDetailActivity, se meten los datos desde ahí
@@ -203,17 +198,12 @@ public class BeerDetailFragment extends Fragment {
                 imageLoader.displayImage(beer.getPhotoURL(), imageview);
             }
         }
-
         return rootView;
     }
-
 
     public void makePostOnApi() {
         new MakePutRequest(mCredential).execute();
     }
-
-
-
 
     /**
      * An asynchronous task that handles the Google Sheets API call.
@@ -258,11 +248,8 @@ public class BeerDetailFragment extends Fragment {
 
         @Override
         protected void onPreExecute() {
-            //mOutputText.setText("");
             mProgress.setVisibility(View.VISIBLE);
             mProgress.animate();
-            //fab.setVisibility(View.INVISIBLE);
-
         }
 
         @Override
@@ -278,12 +265,10 @@ public class BeerDetailFragment extends Fragment {
             //actualizamos el texto en la pantalla
             TextView commentTextView = (TextView) rootView.findViewById(R.id.content_comment);
             commentTextView.setText(model.getBeers().get(beerIndex).getComment());
-            //commentTextView.setText(BeerModel.getBeers().get(beerIndex).getComment());
         }
 
         @Override
         protected void onCancelled() {
-            //fab.setVisibility(View.VISIBLE);
             mProgress.setVisibility(View.INVISIBLE);
             if (mLastError != null) {
                 if (mLastError instanceof UserRecoverableAuthIOException) {

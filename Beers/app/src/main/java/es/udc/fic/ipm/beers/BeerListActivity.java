@@ -96,8 +96,6 @@ public class BeerListActivity extends AppCompatActivity
         mCredential = GoogleAccountCredential.usingOAuth2(
                 getApplicationContext(), Arrays.asList(SCOPES))
                 .setBackOff(new ExponentialBackOff());
-        //mando el mCredential entre actividades
-        //mCredential.setSelectedAccountName(mCredential.getSelectedAccountName())
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -136,12 +134,6 @@ public class BeerListActivity extends AppCompatActivity
             assert recyclerView != null;
             setupRecyclerView((RecyclerView) recyclerView);
         }
-        /*getResultsFromApi();
-        assert recyclerView != null;
-        setupRecyclerView((RecyclerView) recyclerView);*/
-
-
-
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
@@ -250,7 +242,6 @@ public class BeerListActivity extends AppCompatActivity
         switch (requestCode) {
             case REQUEST_GOOGLE_PLAY_SERVICES:
                 if (resultCode != RESULT_OK) {
-                    //mOutputText.setText(getText(R.string.needs_google_play_services));
                     Snackbar.make(findViewById(android.R.id.content), getText(R.string.needs_google_play_services), Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 } else {
@@ -422,7 +413,6 @@ public class BeerListActivity extends AppCompatActivity
 
         @Override
         protected void onPreExecute() {
-            //mOutputText.setText("");
 
         }
 
@@ -476,8 +466,6 @@ public class BeerListActivity extends AppCompatActivity
         } else if (mCredential.getSelectedAccountName() == null) {
             chooseAccount(2);
         } else if (!isDeviceOnline()) {
-            //mOutputText.setText("No network connection available.");
-            //mOutputText.setText(getString(R.string.no_connection_available));
             Snackbar.make(findViewById(android.R.id.content), getString(R.string.no_connection_available), Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
 
@@ -516,9 +504,6 @@ public class BeerListActivity extends AppCompatActivity
         @Override
         protected Integer doInBackground(Void... params) {
             try {
-                /*Beer beer = BeerModel.getBeers().get(beerIndex);
-                return BeerModel.updateDataOnApi(mService, beer, newComment, mCredential.getSelectedAccountName());*/
-
                 model.setContext(getApplicationContext());
                 Beer beer = model.getBeers().get(beerIndex);
                 return model.updateDataOnApi(beer, newComment, mCredential.getSelectedAccountName());
@@ -531,16 +516,10 @@ public class BeerListActivity extends AppCompatActivity
 
         @Override
         protected void onPreExecute() {
-            //mOutputText.setText("");
-            //mProgress.setVisibility(View.VISIBLE);
-            //mProgress.animate();
-            //fab.setVisibility(View.INVISIBLE);
-
         }
 
         @Override
         protected void onPostExecute(Integer entero) {
-            //mProgress.setVisibility(View.INVISIBLE);
             if (entero == 0 || entero == null) {
                 Snackbar.make(findViewById(android.R.id.content), getString(R.string.no_api_results), Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
@@ -551,13 +530,10 @@ public class BeerListActivity extends AppCompatActivity
             //actualizamos el texto en la pantalla
             TextView commentTextView = (TextView) findViewById(R.id.content_comment);
             commentTextView.setText(model.getBeers().get(beerIndex).getComment());
-            //commentTextView.setText(BeerModel.getBeers().get(beerIndex).getComment());
         }
 
         @Override
         protected void onCancelled() {
-            //mProgress.setVisibility(View.INVISIBLE);
-            //fab.setVisibility(View.VISIBLE);
             if (mLastError != null) {
                 if (mLastError instanceof GooglePlayServicesAvailabilityIOException) {
                     showGooglePlayServicesAvailabilityErrorDialog(

@@ -42,27 +42,9 @@ import java.util.Arrays;
  */
 public class BeerDetailActivity extends AppCompatActivity {
 
-    GoogleAccountCredential mCredential;
-
-    static final int REQUEST_ACCOUNT_PICKER = 1000;
-    static final int REQUEST_AUTHORIZATION = 1001;
-    static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
-    static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
-
-
-    private static final String PREF_ACCOUNT_NAME = "accountName";
-    private static final String[] SCOPES = {SheetsScopes.SPREADSHEETS};
-    private String newComment;
-    private EditText editText;
-    private int beerIndex;
-    private ProgressBar mProgress;
-    private BeerModel model;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        model = BeerModel.getBeerModel(null, getApplicationContext());
 
 
         //si tengo los detalles de una cerveza abiertos y giro la pantalla, vuelvo a la
