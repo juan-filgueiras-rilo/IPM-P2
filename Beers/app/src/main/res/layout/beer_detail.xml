@@ -127,20 +127,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/title_more_info" />
-
-            <TextView
-                android:id="@+id/title_photo_url"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="30dp"
-                android:textStyle="bold"
-                android:text="@string/beer_photo_url"
-                android:layout_below="@id/content_more_info" />
-            <TextView
-                android:id="@+id/content_photo_url"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/title_photo_url" />
             <TextView
                 android:id="@+id/title_photo_viewer"
                 android:layout_width="wrap_content"
@@ -148,7 +134,7 @@
                 android:textSize="30dp"
                 android:textStyle="bold"
                 android:text="@string/beer_photo"
-                android:layout_below="@id/content_photo_url" />
+                android:layout_below="@id/content_more_info" />
             <ImageView
                 android:id="@+id/beer_photo_viewer"
                 android:layout_width="wrap_content"
