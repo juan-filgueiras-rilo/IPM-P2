@@ -43,6 +43,6 @@
 	-no se actualiza el diseño de la interfaz ya que lo único que cambia es el formato de las fechas y el idioma de los textos
 	-no se actualiza el diseño software ya que no se toca nada del código
 
-### final:
+### task_final:
 	-después del task5 se procederá a rediseñar el diseño software de la aplicación y a rediseñar visualmente la aplicación para que sea más estética y cumpla con las guías de diseño de Android.
 	-se sub
