@@ -45,4 +45,3 @@
 
 ### task_final:
 	-después del task5 se procederá a rediseñar el diseño software de la aplicación y a rediseñar visualmente la aplicación para que sea más estética y cumpla con las guías de diseño de Android.
-	-se sub
